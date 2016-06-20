@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" >
+  <title>Android进程通信原理 | Gooooood</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="Android系统提供了一些通用服务，比如音乐打电话发短信，WIFI，定位，输入法，传感器等。应用程序与这些通用服务运行在不同的进程中，如果应用程序想要与这些通用服务交互就要涉及到进程间通信，Binder就是为了Android进程间通信而设计的。
+Binder框架Binder是一种架构，这种架构提供了服务端接口、Binder驱动、客户端接口三个模块。
+服务端Binder服务端相当于一个Binder">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android进程通信原理">
+<meta property="og:url" content="http://zhaoshuo.me/2016/06/11/Android进程通信原理/index.html">
+<meta property="og:site_name" content="Gooooood">
+<meta property="og:description" content="Android系统提供了一些通用服务，比如音乐打电话发短信，WIFI，定位，输入法，传感器等。应用程序与这些通用服务运行在不同的进程中，如果应用程序想要与这些通用服务交互就要涉及到进程间通信，Binder就是为了Android进程间通信而设计的。
+Binder框架Binder是一种架构，这种架构提供了服务端接口、Binder驱动、客户端接口三个模块。
+服务端Binder服务端相当于一个Binder">
+<meta property="og:updated_time" content="2016-06-20T06:54:28.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android进程通信原理">
+<meta name="twitter:description" content="Android系统提供了一些通用服务，比如音乐打电话发短信，WIFI，定位，输入法，传感器等。应用程序与这些通用服务运行在不同的进程中，如果应用程序想要与这些通用服务交互就要涉及到进程间通信，Binder就是为了Android进程间通信而设计的。
+Binder框架Binder是一种架构，这种架构提供了服务端接口、Binder驱动、客户端接口三个模块。
+服务端Binder服务端相当于一个Binder">
+  
+    <link rel="alternative" href="/atom.xml" title="Gooooood" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/blackcat.jpg">
+  
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+</head>
+
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+	<header id="header" class="inner">
+		<a href="/" class="profilepic">
+			
+			<img lazy-src="http://zhaoshuo.me/img/blackcat.jpg" class="js-avatar">
+			
+		</a>
+
+		<hgroup>
+		  <h1 class="header-author"><a href="/">Gooooood</a></h1>
+		</hgroup>
+
+		
+
+		
+			<div class="switch-btn">
+				<div class="icon">
+					<div class="icon-ctn">
+						<div class="icon-wrap icon-house" data-idx="0">
+							<div class="birdhouse"></div>
+							<div class="birdhouse_holes"></div>
+						</div>
+						<div class="icon-wrap icon-ribbon hide" data-idx="1">
+							<div class="ribbon"></div>
+						</div>
+						
+						<div class="icon-wrap icon-link hide" data-idx="2">
+							<div class="loopback_l"></div>
+							<div class="loopback_r"></div>
+						</div>
+						
+						
+						<div class="icon-wrap icon-me hide" data-idx="3">
+							<div class="user"></div>
+							<div class="shoulder"></div>
+						</div>
+						
+					</div>
+					
+				</div>
+				<div class="tips-box hide">
+					<div class="tips-arrow"></div>
+					<ul class="tips-inner">
+						<li>菜单</li>
+						<li>标签</li>
+						
+						<li>友情链接</li>
+						
+						
+						<li>关于我</li>
+						
+					</ul>
+				</div>
+			</div>
+		
+
+		<div class="switch-area">
+			<div class="switch-wrap">
+				<section class="switch-part switch-part1">
+					<nav class="header-menu">
+						<ul>
+						
+							<li><a href="/">主页</a></li>
+				        
+							<li><a href="/categories/随笔">随笔</a></li>
+				        
+							<li><a href="/archives">所有文章</a></li>
+				        
+							<li><a href="/about">关于我</a></li>
+				        
+						</ul>
+					</nav>
+					<nav class="header-nav">
+						<div class="social">
+							
+								<a class="github" target="_blank" href="https://github.com/thesingularityisnear" title="github">github</a>
+					        
+								<a class="weibo" target="_blank" href="http://www.jianshu.com/users/126f0e4a7246/latest_articles" title="weibo">weibo</a>
+					        
+								<a class="mail" target="_blank" href="mailto:gandroid@yeah.net" title="mail">mail</a>
+					        
+						</div>
+					</nav>
+				</section>
+				
+				
+				<section class="switch-part switch-part2">
+					<div class="widget tagcloud" id="js-tagcloud">
+						<a href="/tags/Android/" style="font-size: 20px;">Android</a> <a href="/tags/IPC/" style="font-size: 10px;">IPC</a> <a href="/tags/React-Native/" style="font-size: 10px;">React Native</a> <a href="/tags/VPN/" style="font-size: 10px;">VPN</a> <a href="/tags/hexo/" style="font-size: 10px;">hexo</a> <a href="/tags/代理/" style="font-size: 10px;">代理</a> <a href="/tags/内存管理/" style="font-size: 10px;">内存管理</a> <a href="/tags/教程/" style="font-size: 20px;">教程</a> <a href="/tags/歌词/" style="font-size: 10px;">歌词</a> <a href="/tags/科学上网/" style="font-size: 10px;">科学上网</a> <a href="/tags/进程间通信/" style="font-size: 10px;">进程间通信</a>
+					</div>
+				</section>
+				
+				
+				
+				<section class="switch-part switch-part3">
+					<div id="js-friends">
+					
+			          <a target="_blank" class="main-nav-link switch-friends-link" href="http://www.jianshu.com/users/126f0e4a7246/timeline">简书主页</a>
+			        
+			          <a target="_blank" class="main-nav-link switch-friends-link" href="http://blog.csdn.net/thesingularityisnear">CSDN主页</a>
+			        
+			        </div>
+				</section>
+				
+
+				
+				
+				<section class="switch-part switch-part4">
+				
+					<div id="js-aboutme">坐标帝都，专注于Android客户端开发</div>
+				</section>
+				
+			</div>
+		</div>
+	</header>				
+</div>
+
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+  	<div class="overlay">
+  		<div class="slider-trigger"></div>
+  		<h1 class="header-author js-mobile-header hide">Gooooood</h1>
+  	</div>
+	<div class="intrude-less">
+		<header id="header" class="inner">
+			<div class="profilepic">
+			
+				<img lazy-src="http://zhaoshuo.me/img/blackcat.jpg" class="js-avatar">
+			
+			</div>
+			<hgroup>
+			  <h1 class="header-author">Gooooood</h1>
+			</hgroup>
+			
+			<nav class="header-menu">
+				<ul>
+				
+					<li><a href="/">主页</a></li>
+		        
+					<li><a href="/categories/随笔">随笔</a></li>
+		        
+					<li><a href="/archives">所有文章</a></li>
+		        
+					<li><a href="/about">关于我</a></li>
+		        
+		        <div class="clearfix"></div>
+				</ul>
+			</nav>
+			<nav class="header-nav">
+				<div class="social">
+					
+						<a class="github" target="_blank" href="https://github.com/thesingularityisnear" title="github">github</a>
+			        
+						<a class="weibo" target="_blank" href="http://www.jianshu.com/users/126f0e4a7246/latest_articles" title="weibo">weibo</a>
+			        
+						<a class="mail" target="_blank" href="mailto:gandroid@yeah.net" title="mail">mail</a>
+			        
+				</div>
+			</nav>
+		</header>				
+	</div>
+</nav>
+
+      <div class="body-wrap"><article id="post-Android进程通信原理" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2016/06/11/Android进程通信原理/" class="article-date">
+  	<time datetime="2016-06-11T06:51:56.000Z" itemprop="datePublished">2016-06-11</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Android进程通信原理
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android/">Android</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/IPC/">IPC</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/进程间通信/">进程间通信</a></li></ul>
+	</div>
+
+        
+	<div class="article-category tagcloud">
+	<a class="article-category-link" href="/categories/Android内核剖析/">Android内核剖析</a>
+	</div>
+
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Android系统提供了一些通用服务，比如音乐打电话发短信，WIFI，定位，输入法，传感器等。应用程序与这些通用服务运行在不同的进程中，如果应用程序想要与这些通用服务交互就要涉及到进程间通信，Binder就是为了Android进程间通信而设计的。</p>
+<h2 id="Binder_u6846_u67B6"><a href="#Binder_u6846_u67B6" class="headerlink" title="Binder框架"></a>Binder框架</h2><p>Binder是一种架构，这种架构提供了服务端接口、Binder驱动、客户端接口三个模块。</p>
+<p><strong>服务端</strong><br>Binder服务端相当于一个Binder类对象。当创建该对象时，其内部会启动一个线程不断接收Binder驱动发送的消息。收到消息后会执行Binder.onTransact()方法。所以要实现一个Binder服务就必须重载onTransact()方法。</p>
+<p>onTransact()方法通常用来做数据格式转换，按约定的顺序取出Binder客户端发送来的数据并转换成服务端识别的数据格式。</p>
+<p><strong>Binder驱动</strong><br>Binder驱动运行在内核态，其所有操作都是基于内存而非硬件，客户端与服务端通信时需要Binder驱动进行中转。</p>
+<p>当一个服务端Binder被创建时其在Binder驱动中同时会创建一个mRemote引用指向服务端。客户端要访问服务端时首先要获取服务端在Binder中的引用mRemote，获取引用后就可以通过mRemote.transact()方法向服务端发送消息。</p>
+<p>transact()方法实现了以下几个功能：</p>
+<ul>
+<li>以线程间消息通信的模式向服务端发送客户端传递过来的参数。</li>
+<li>挂起当前客户端线程，等待服务端线程执行完毕后的通知(notify)</li>
+<li>接收服务端线程通知，继续执行客户端线程，并返回执行结果</li>
+</ul>
+<p><strong>客户端</strong><br>这里就是指我们需要和系统服务交互的应用程序。应用程序使用startService()与应用程序Service建立连接，使用getSystemService()与系统Service建立连接，从而进行通信。</p>
+<p><strong>数据格式</strong><br>在进行IPC通信时需要约定客户端与服务端通信的数据格式。Android使用AIDL（Android Interface Definition Language）约定数据格式。</p>
+<p>Android提供了一个AIDL工具，可以把AIDL文件转换成一个Java类，在该Java类中同时重载了onTransact()方法和transact()方法，统一了存入和读取参数。</p>
+<h2 id="u5B9E_u73B0Binder_u670D_u52A1_u7AEF"><a href="#u5B9E_u73B0Binder_u670D_u52A1_u7AEF" class="headerlink" title="实现Binder服务端"></a>实现Binder服务端</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MusicService</span> <span class="keyword">extends</span> <span class="title">Binder</span></span>&#123;</span><br><span class="line">    <span class="annotation">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">boolean</span> <span class="title">onTransact</span><span class="params">(<span class="keyword">int</span> code, Parcel data, Parcel reply, <span class="keyword">int</span> flags)</span> <span class="keyword">throws</span> RemoteException</span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">super</span>.onTransact(code,data,reply, flags);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">start</span><span class="params">(String filePath)</span></span>&#123;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">stop</span><span class="params">()</span></span>&#123;&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>以上代码基于Binder创建了一个Service，使用startService()方法启动后就可以看到DDMS中多了一个线程。</p>
+<p>重载onTransact(int code, Parcel data, Parcel reply, int flags)方法：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">switch</span>(code)&#123;</span><br><span class="line">     code <span class="number">1000</span>:</span><br><span class="line">            data.enforceInterface(<span class="string">"MusicService"</span>);<span class="comment">// 数据校验与客户端writeInterfaceToken()对应</span></span><br><span class="line">            String filePath = data.readString();<span class="comment">//读取一个字符串</span></span><br><span class="line">            start(filePath);</span><br><span class="line">            <span class="comment">// reply.write<span class="label">XXX();//如果需要返回结果则写入reply中</span></span></span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>data中保存着客户端传递过来的参数，onTransact()方法内部需要从data中读取客户端传递的参数。参数的位置格式需要在AIDL文件中约束。<br>reply中保存服务端返回客户端的结果，如果需要返回则调用Parcel提供的相关方法写入结果。参数的位置格式需要在AIDL文件中约束。<br>code变量标识客户端希望服务端执行哪个方法，这里假定1000执行start()方法。<br>flags表示IPC调用模式：0代表”双向模式”，服务端在执行完指定服务后会返回数据；1代表”单向模式”，服务端在执行完指定服务后不反回任何数据。</p>
+<h2 id="u5B9E_u73B0Binder_u5BA2_u6237_u7AEF"><a href="#u5B9E_u73B0Binder_u5BA2_u6237_u7AEF" class="headerlink" title="实现Binder客户端"></a>实现Binder客户端</h2><p>首先在startService()，getSystemService()中获取服务端Binder的引用，然后将参数按AIDL定义的格式写入data中并调用mRemote.transact()方法传入参数，服务端会在onTransact()方法中取出这里出入的参数：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">IBinder mRemote = <span class="keyword">null</span>;</span><br><span class="line">String filePath = <span class="string">"/sdcard/music/xxx.mp3"</span>;</span><br><span class="line"><span class="keyword">int</span> code = <span class="number">1000</span>;</span><br><span class="line">Parcel data = Parcel.obtain();</span><br><span class="line">Parcel reply = Parcel.obtain();</span><br><span class="line">data.writeInterfaceToken(<span class="string">"MusicService"</span>);</span><br><span class="line">data.writeString(filePath);</span><br><span class="line">mRemote.transact(code,data,reply,<span class="number">0</span>);</span><br><span class="line">IBinder binder = reply.readStrongBinder();</span><br><span class="line">reply.recycle();</span><br><span class="line">data.recycle();</span><br></pre></td></tr></table></figure></p>
+<p>调用mRemote.transact()方法后，Binder驱动会挂起当前客户端线程，并向服务端发送一个消息，这个消息就包括客户端传递的参数。服务端接收到消息，解析数据执行完相关任务后会把执行结果写入reply中，然后向Binder驱动发送一个notify消息，Binder驱动从挂起处唤醒客户端线程继续执行。</p>
+<h2 id="u7CFB_u7EDFService_u4E0E_u5E94_u7528_u7A0B_u5E8FService"><a href="#u7CFB_u7EDFService_u4E0E_u5E94_u7528_u7A0B_u5E8FService" class="headerlink" title="系统Service与应用程序Service"></a>系统Service与应用程序Service</h2><p>Service也就是服务分为两种，一种是系统创建的Service，另一种是应用程序自定义的Service。这两种Service都是Binder服务端。</p>
+<p><strong>系统Service</strong><br>系统Service在系统系统初始化时从SystemServer进程中启动。常见的有PowerManagerService（电源管理服务），VibratorService（振动传感器服务），WindowManagerService（窗口管理服务）NotificationManagerService等等，每个系统服务都是一个Binder，都运行在一个独立的线程中。</p>
+<p>系统提供了一个ServiceManager类来管理系统服务ServiceManager本身也是一个Binder，运行在一个独立的进程中，其提供了一个全局Binder供应用程序使用，应用程序获取其他系统服务都是通过ServiceManager的全局Binder来获取的。</p>
+<p>这设计的好处仅仅暴露一个全局Binder引用，其他系统服务则隐藏起来，从而有助于系统扩展，以及调用系统服务的安全检查。</p>
+<p>系统Service在启动时首先向ServiceManager注册Service（注册自己），当调用getSystemService(serviceName)获取系统服务时，会间接调用到ServiceManager.getService(String name)方法。getService()实现如下所示：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> IBinder <span class="title">getService</span><span class="params">(String name)</span></span>&#123;</span><br><span class="line">    <span class="keyword">try</span>&#123;</span><br><span class="line">        IBinder service = sCache.get(name);</span><br><span class="line">        <span class="keyword">if</span>(service != <span class="keyword">null</span>)&#123;</span><br><span class="line">            <span class="keyword">return</span> service;</span><br><span class="line">        &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">            <span class="keyword">return</span> getIServiceManager().getService(name);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; <span class="keyword">catch</span>(RemoteException e)&#123;</span><br><span class="line">        Log.e(TAG,<span class="string">"error in get Service"</span>, e);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>首先从缓存中获取，没获取到则从getIServiceManager()中获取，getIServiceManager()返回的是系统唯一ServiceManager的Binder。</p>
+<p><strong>应用程序Service</strong><br>系统在ActivityManagerService中提供了startService()方法来启动应用程序自定义Service。客户端使用以下方法和应用程序Service建立连接：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> ComponentName <span class="title">startService</span><span class="params">(Intent intent)</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">bindService</span><span class="params">(Intent service, ServiceConnection conn,<span class="keyword">int</span> flags)</span></span></span><br></pre></td></tr></table></figure></p>
+<p>startService用于启动一个服务，bindService用于绑定一个服务，bindService的第二个参数是获取服务端Binder的关键所在：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">ServiceConnection</span></span>&#123;</span><br><span class="line">     <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onServiceConnected</span><span class="params">(ComponentName name,IBinder service)</span></span>;</span><br><span class="line">     <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onServiceDisconnected</span><span class="params">(ComponentName name)</span></span>;    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>onServiceConnected()方法的第二个变量就是我们需要的服务端Binder的引用，当客户端请求AmS启动某个Service，如果该Service正常启动，那么AmS就会远程调用ActivityThread类中的ApplicationThread对象，调用的参数包括Service的Binder引用，然后在ApplicationThread中会回调bindService()方法中的conn接口。因此，在客户端中，可以在onServiceConnected()方法中将其参数Service保存为一个全局变量，从而在客户端任何地方都可以随时调用该服务。</p>
+
+      
+    </div>
+    
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2016/06/12/React-Native语法指南/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption"><</strong>
+      <div class="article-nav-title">
+        
+          React Native语法指南
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2016/06/02/Android-内存管理/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">Android 内存管理</div>
+      <strong class="article-nav-caption">></strong>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+<div class="share_jia">
+	<!-- JiaThis Button BEGIN -->
+	<div class="jiathis_style">
+		<span class="jiathis_txt">分享到: &nbsp; </span>
+		<a class="jiathis_button_facebook"></a> 
+    <a class="jiathis_button_twitter"></a>
+    <a class="jiathis_button_plus"></a> 
+    <a class="jiathis_button_tsina"></a>
+		<a class="jiathis_button_cqq"></a>
+		<a class="jiathis_button_douban"></a>
+		<a class="jiathis_button_weixin"></a>
+		<a class="jiathis_button_tumblr"></a>
+    <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+	</div>
+	<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1405949716054953" charset="utf-8"></script>
+	<!-- JiaThis Button END -->
+</div>
+
+
+
+
+
+
+<div class="duoshuo">
+	<!-- 多说评论框 start -->
+	<div class="ds-thread" data-thread-key="Android进程通信原理" data-title="Android进程通信原理" data-url="http://zhaoshuo.me/2016/06/11/Android进程通信原理/"></div>
+	<!-- 多说评论框 end -->
+	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+	<script type="text/javascript">
+	var duoshuoQuery = {short_name:"zhaoshuo"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		 || document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+	<!-- 多说公共JS代码 end -->
+</div>
+
+
+
+
+</div>
+      <footer id="footer">
+  <div class="outer">
+    <div id="footer-info">
+    	<div class="footer-left">
+    		&copy; 2016 Gooooood
+    	</div>
+      	<div class="footer-right">
+      		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
+      	</div>
+    </div>
+  </div>
+</footer>
+    </div>
+    
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css" type="text/css">
+
+
+<script>
+	var yiliaConfig = {
+		fancybox: true,
+		mathjax: true,
+		animate: true,
+		isHome: false,
+		isPost: true,
+		isArchive: false,
+		isTag: false,
+		isCategory: false,
+		open_in_new: false
+	}
+</script>
+<script src="http://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js" type="text/javascript"></script>
+<script src="/js/main.js" type="text/javascript"></script>
+
+
+
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    }
+});
+
+MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';                 
+    }       
+});
+</script>
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+  </div>
+</body>
+</html>
