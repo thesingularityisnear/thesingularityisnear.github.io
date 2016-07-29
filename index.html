@@ -194,98 +194,6 @@
 
       <div class="body-wrap">
   
-    <article id="post-GC算法与内存回收" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/2016/07/29/GC算法与内存回收/" class="article-date">
-  	<time datetime="2016-07-29T06:13:03.000Z" itemprop="datePublished">2016-07-29</time>
-</a>
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/07/29/GC算法与内存回收/">GC算法与内存回收</a>
-    </h1>
-  
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Java内存回收虽说是自动完成，但当需要排查各种内存溢出问题以及提高系统并发量时，仍然需要对Java的垃圾回收技术进行必要调节与监控。本文主要介绍垃圾收集器的GC算法与内存回收策略。</p>
-<h2 id="u5BF9_u8C61_u5F15_u7528_u7B97_u6CD5"><a href="#u5BF9_u8C61_u5F15_u7528_u7B97_u6CD5" class="headerlink" title="对象引用算法"></a>对象引用算法</h2><p>GC在回收内存之前首先需要知道对象是否存活，只有那些不需要存活的对象才需要回收。常见判断对象是否存活的方法有两种，一种是引用计数器算法，一种是可达性分析算法，这两种算法在行业内都被广泛使用。</p>
-<p><strong>引用计数器算法</strong><br>给对象添加一个引用计数器，每当有一个地方引用它时就+1；当引用失效时就-1；任何时刻计数器为0则表示对象不再被使用。</p>
-<p>引用计数器算法实现简单，判定效率较高，在一些其他语言与游戏脚本中广泛使用。不过它很难解决对象之间相互循环引用的问题。</p>
-<p><strong>可达性分析算法</strong><br>该算法基本思想是：基本通过一系列被称为“GC Roots”的对象作为起始点，从这些节点开始向下搜索，搜索所走过的路径称为引用链（Reference Chain），当一个对象到GC Roots没有任何引用链相连（用图论说就是从GCRoots到这个对象不可达），则证明此对象不可用。</p>
-<p>可达性分析算法在Java，C#等语言的主流实现中用来判定对象是否可用。在Java语言中可作为GC Roots的对象包括：虚拟机栈中引用的对象，方法区中静态属性引用的对象，方法区中常量引用的对象。本地方法栈中JNI引用的对象。</p>
-<h2 id="Java_u4E2D_u7684_u56DB_u79CD_u5F15_u7528"><a href="#Java_u4E2D_u7684_u56DB_u79CD_u5F15_u7528" class="headerlink" title="Java中的四种引用"></a>Java中的四种引用</h2><p>为了描述：一些对象在内存空间足够时则能保存在内存中，当内存空间紧张时则释放掉这些对象。Java将引用的概念扩充为4中，分别为强引用（Strong Reference）、软引用（Soft Reference）、弱引用（Weak Reference）、虚引用（Phantom Reference），这四种引用强度依次减弱。</p>
-<p><strong>强引用</strong><br>强引用指在代码中普遍存在的类似<code>Object obj = new Object()</code>这类的引用，只要强引用还存在，垃圾收集器就永远不会回收掉改引用的对象。</p>
-<p><strong>软引用</strong><br>软引用用来描述一些还有用但并非必须的对象。对于软引用关联的对象，在系统将要发生内存溢出异常之前，将会把这些对象列进回收范围之中进行二次回收。如果这次回收还没有足够的内存，才会抛出内存溢出异常。</p>
-<p><strong>弱引用</strong><br>弱引用用来描述非必须的对象，但它的强度比软引用要更弱一些，被弱引用关联的对象只能生存到下一次垃圾收集发生之前。当垃圾收集工作时，无论当前内存是否够用，都会回收掉只被弱引用关联的对象。</p>
-<p><strong>虚引用</strong><br>虚引用也被称为幽灵引用或者幻影引用，它是最弱的一种引用关系。一个对象是否有虚引用的存在，完全不会对其生存时间构成影响也无法通过虚引用来取得一个对象实例。为一个对象设置虚引用关联的唯一目的就是能在这个对象被收集器回收之前收到一个系统通知。</p>
-<h2 id="u5BF9_u8C61_u5185_u5B58_u56DE_u6536"><a href="#u5BF9_u8C61_u5185_u5B58_u56DE_u6536" class="headerlink" title="对象内存回收"></a>对象内存回收</h2><p>一个对象即使被可达性分析算法标记为不可达也并非立即被回收，至少要标记两次才有可能被回收：</p>
-<p>如果对象在进行可达性分析后发现没有与GC Roots相连接的引用链，那么它就会被第一次标记并且进行一次筛选，筛选的条件是此对象是否有必要执行finalize()方法。当对象没有覆盖finalize()方法，或者finalize()方法已经被虚拟机调用过，虚拟机将这两种情况视为没有必要执行。</p>
-<p>如果这个对象有必要执行finalize()方法，那么这个对象会被放置到一个F-Queue的队列中，并在稍后由一个虚拟机自动创建的低优先级的Finalizer线程去执行它。不过这里的执行仅仅是虚拟机插法此方法，但并不承诺会等待它运行完成。因为如果finalize执行时间较长或发生死循环会导致F-Queue中的其他对象用于处于等待状态进而导致内存回收系统的崩溃。</p>
-<p>稍后GC将对F-Queue中的对象进行第二次小范围的标记，如果对象在finilize中重新建立起引用链连接，那么在第二次标记中就会被移除即将回收的集合；如果对象这时候仍然没有引用链，那么基本上它就要被回收了。</p>
-<p>注意：任何一个对象的finalize方法都只会被系统调用一次，如果下一次GC回收，它的finalize方法将不会被执行。</p>
-<h2 id="u65B9_u6CD5_u533A_u5185_u5B58_u56DE_u6536"><a href="#u65B9_u6CD5_u533A_u5185_u5B58_u56DE_u6536" class="headerlink" title="方法区内存回收"></a>方法区内存回收</h2><p>像程序计数器、虚拟机栈、本地方法栈都是随线程而生，随线程而亡，不需要进行内存回收。方法区术语HotSpot虚拟机的永久带，Java虚拟机规范规定可以不对方法区进行回收。而且对于永久带回收内存的效率比较低。</p>
-<p>永久带垃圾收集主要包括两部分：废弃的常量、无用的类。常量池中的字符串，类、方法，字段的符号引用如果不在被使用则需要清理出常量池。</p>
-<p>判定一个常量是否需要回收比较简单，判断一个类是否需要回收则条件比较苛刻，需要同时满足三个条件：</p>
-<ul>
-<li>该类所有实例都被回收</li>
-<li>加载该类的ClassLoader已被回收</li>
-<li>该类对应的java.lang.Class对象没有在任何地方被引用，无法在任何地方通过访问该类的方法</li>
-</ul>
-<h2 id="u5783_u573E_u6536_u96C6_u7B97_u6CD5"><a href="#u5783_u573E_u6536_u96C6_u7B97_u6CD5" class="headerlink" title="垃圾收集算法"></a>垃圾收集算法</h2><p><strong>标记-清除算法</strong><br>首先标记出所需要回收的对象，在标记完成后统一回收所有被标记（前面介绍过）的对象。</p>
-<p>该算法有两个不足，一是效率问题，标记和清除的效率都不高，二是空间问题，标记清除之后会产生大量不连续的内存碎片，空间碎片太多可能会导致以后程序运行过程中需要分配较大对象时无法找到足够的连续内存而不得不提前触发另一次垃圾回收。</p>
-<p><strong>复制算法</strong><br>该算法将可用内存按容量大小分为大小相等的两块，每次只使用其中一块。当这一块内存用完了就将还存活的对象复制到另一块上面，这样内存分配时就不用考虑内存碎片等复杂情况，只需要移动堆顶指针，按顺序分配内存即可。</p>
-<p>复制算法解决了标记-清除算法的效率问题，实现简单，运行效率高，但将内存缩小为一半代价过高。复制算法在对象存活率较高时会进行过多复制，效率会降低，而且如果不想浪费50%的内存空间就需要额外的空间进行分配担保，以应对被使用内存对象100%存活的极端情况。</p>
-<p>新生代在每次垃圾回收时都有大量对象死亡所以特别适用复制算法，而且该算法的改进版不需要按照1:1的比例划分内存空间，只需要按经验值划分即可。</p>
-<p><strong>标记-整理算法</strong><br>该算法首先标记出所需要回收的对象，在标记完成后统一后将所有存活的对象统一移动到一端，然后直接清理掉边界以外的内存。</p>
-<p>老年代中的对象存活时间都比较久，适用于标记整理算法。</p>
-<p><strong>分代收集算法</strong><br>该算法根据对象存活周期将内存划分为不同的几块。一般是把Java堆分为新生代和老年代，这样就可以根据各个年代的特点分别采用最合适的收集算法。当前商业虚拟机普遍采用分代收集算法。</p>
-
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/GC算法/">GC算法</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java/">Java</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/内存回收/">内存回收</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/虚拟机/">虚拟机</a></li></ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-	<a class="article-category-link" href="/categories/Java虚拟机/">Java虚拟机</a>
-	</div>
-
-
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-
-
-  
     <article id="post-Java内存区域与异常" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
@@ -560,6 +468,98 @@
       
 	<div class="article-tag tagcloud">
 		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Class/">Class</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java/">Java</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/虚拟机/">虚拟机</a></li></ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+	<a class="article-category-link" href="/categories/Java虚拟机/">Java虚拟机</a>
+	</div>
+
+
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+
+
+  
+    <article id="post-GC算法与内存回收" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2016/07/17/GC算法与内存回收/" class="article-date">
+  	<time datetime="2016-07-17T06:13:03.000Z" itemprop="datePublished">2016-07-17</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/07/17/GC算法与内存回收/">GC算法与内存回收</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Java内存回收虽说是自动完成，但当需要排查各种内存溢出问题以及提高系统并发量时，仍然需要对Java的垃圾回收技术进行必要调节与监控。本文主要介绍垃圾收集器的GC算法与内存回收策略。</p>
+<h2 id="u5BF9_u8C61_u5F15_u7528_u7B97_u6CD5"><a href="#u5BF9_u8C61_u5F15_u7528_u7B97_u6CD5" class="headerlink" title="对象引用算法"></a>对象引用算法</h2><p>GC在回收内存之前首先需要知道对象是否存活，只有那些不需要存活的对象才需要回收。常见判断对象是否存活的方法有两种，一种是引用计数器算法，一种是可达性分析算法，这两种算法在行业内都被广泛使用。</p>
+<p><strong>引用计数器算法</strong><br>给对象添加一个引用计数器，每当有一个地方引用它时就+1；当引用失效时就-1；任何时刻计数器为0则表示对象不再被使用。</p>
+<p>引用计数器算法实现简单，判定效率较高，在一些其他语言与游戏脚本中广泛使用。不过它很难解决对象之间相互循环引用的问题。</p>
+<p><strong>可达性分析算法</strong><br>该算法基本思想是：基本通过一系列被称为“GC Roots”的对象作为起始点，从这些节点开始向下搜索，搜索所走过的路径称为引用链（Reference Chain），当一个对象到GC Roots没有任何引用链相连（用图论说就是从GCRoots到这个对象不可达），则证明此对象不可用。</p>
+<p>可达性分析算法在Java，C#等语言的主流实现中用来判定对象是否可用。在Java语言中可作为GC Roots的对象包括：虚拟机栈中引用的对象，方法区中静态属性引用的对象，方法区中常量引用的对象。本地方法栈中JNI引用的对象。</p>
+<h2 id="Java_u4E2D_u7684_u56DB_u79CD_u5F15_u7528"><a href="#Java_u4E2D_u7684_u56DB_u79CD_u5F15_u7528" class="headerlink" title="Java中的四种引用"></a>Java中的四种引用</h2><p>为了描述：一些对象在内存空间足够时则能保存在内存中，当内存空间紧张时则释放掉这些对象。Java将引用的概念扩充为4中，分别为强引用（Strong Reference）、软引用（Soft Reference）、弱引用（Weak Reference）、虚引用（Phantom Reference），这四种引用强度依次减弱。</p>
+<p><strong>强引用</strong><br>强引用指在代码中普遍存在的类似<code>Object obj = new Object()</code>这类的引用，只要强引用还存在，垃圾收集器就永远不会回收掉改引用的对象。</p>
+<p><strong>软引用</strong><br>软引用用来描述一些还有用但并非必须的对象。对于软引用关联的对象，在系统将要发生内存溢出异常之前，将会把这些对象列进回收范围之中进行二次回收。如果这次回收还没有足够的内存，才会抛出内存溢出异常。</p>
+<p><strong>弱引用</strong><br>弱引用用来描述非必须的对象，但它的强度比软引用要更弱一些，被弱引用关联的对象只能生存到下一次垃圾收集发生之前。当垃圾收集工作时，无论当前内存是否够用，都会回收掉只被弱引用关联的对象。</p>
+<p><strong>虚引用</strong><br>虚引用也被称为幽灵引用或者幻影引用，它是最弱的一种引用关系。一个对象是否有虚引用的存在，完全不会对其生存时间构成影响也无法通过虚引用来取得一个对象实例。为一个对象设置虚引用关联的唯一目的就是能在这个对象被收集器回收之前收到一个系统通知。</p>
+<h2 id="u5BF9_u8C61_u5185_u5B58_u56DE_u6536"><a href="#u5BF9_u8C61_u5185_u5B58_u56DE_u6536" class="headerlink" title="对象内存回收"></a>对象内存回收</h2><p>一个对象即使被可达性分析算法标记为不可达也并非立即被回收，至少要标记两次才有可能被回收：</p>
+<p>如果对象在进行可达性分析后发现没有与GC Roots相连接的引用链，那么它就会被第一次标记并且进行一次筛选，筛选的条件是此对象是否有必要执行finalize()方法。当对象没有覆盖finalize()方法，或者finalize()方法已经被虚拟机调用过，虚拟机将这两种情况视为没有必要执行。</p>
+<p>如果这个对象有必要执行finalize()方法，那么这个对象会被放置到一个F-Queue的队列中，并在稍后由一个虚拟机自动创建的低优先级的Finalizer线程去执行它。不过这里的执行仅仅是虚拟机插法此方法，但并不承诺会等待它运行完成。因为如果finalize执行时间较长或发生死循环会导致F-Queue中的其他对象用于处于等待状态进而导致内存回收系统的崩溃。</p>
+<p>稍后GC将对F-Queue中的对象进行第二次小范围的标记，如果对象在finilize中重新建立起引用链连接，那么在第二次标记中就会被移除即将回收的集合；如果对象这时候仍然没有引用链，那么基本上它就要被回收了。</p>
+<p>注意：任何一个对象的finalize方法都只会被系统调用一次，如果下一次GC回收，它的finalize方法将不会被执行。</p>
+<h2 id="u65B9_u6CD5_u533A_u5185_u5B58_u56DE_u6536"><a href="#u65B9_u6CD5_u533A_u5185_u5B58_u56DE_u6536" class="headerlink" title="方法区内存回收"></a>方法区内存回收</h2><p>像程序计数器、虚拟机栈、本地方法栈都是随线程而生，随线程而亡，不需要进行内存回收。方法区术语HotSpot虚拟机的永久带，Java虚拟机规范规定可以不对方法区进行回收。而且对于永久带回收内存的效率比较低。</p>
+<p>永久带垃圾收集主要包括两部分：废弃的常量、无用的类。常量池中的字符串，类、方法，字段的符号引用如果不在被使用则需要清理出常量池。</p>
+<p>判定一个常量是否需要回收比较简单，判断一个类是否需要回收则条件比较苛刻，需要同时满足三个条件：</p>
+<ul>
+<li>该类所有实例都被回收</li>
+<li>加载该类的ClassLoader已被回收</li>
+<li>该类对应的java.lang.Class对象没有在任何地方被引用，无法在任何地方通过访问该类的方法</li>
+</ul>
+<h2 id="u5783_u573E_u6536_u96C6_u7B97_u6CD5"><a href="#u5783_u573E_u6536_u96C6_u7B97_u6CD5" class="headerlink" title="垃圾收集算法"></a>垃圾收集算法</h2><p><strong>标记-清除算法</strong><br>首先标记出所需要回收的对象，在标记完成后统一回收所有被标记（前面介绍过）的对象。</p>
+<p>该算法有两个不足，一是效率问题，标记和清除的效率都不高，二是空间问题，标记清除之后会产生大量不连续的内存碎片，空间碎片太多可能会导致以后程序运行过程中需要分配较大对象时无法找到足够的连续内存而不得不提前触发另一次垃圾回收。</p>
+<p><strong>复制算法</strong><br>该算法将可用内存按容量大小分为大小相等的两块，每次只使用其中一块。当这一块内存用完了就将还存活的对象复制到另一块上面，这样内存分配时就不用考虑内存碎片等复杂情况，只需要移动堆顶指针，按顺序分配内存即可。</p>
+<p>复制算法解决了标记-清除算法的效率问题，实现简单，运行效率高，但将内存缩小为一半代价过高。复制算法在对象存活率较高时会进行过多复制，效率会降低，而且如果不想浪费50%的内存空间就需要额外的空间进行分配担保，以应对被使用内存对象100%存活的极端情况。</p>
+<p>新生代在每次垃圾回收时都有大量对象死亡所以特别适用复制算法，而且该算法的改进版不需要按照1:1的比例划分内存空间，只需要按经验值划分即可。</p>
+<p><strong>标记-整理算法</strong><br>该算法首先标记出所需要回收的对象，在标记完成后统一后将所有存活的对象统一移动到一端，然后直接清理掉边界以外的内存。</p>
+<p>老年代中的对象存活时间都比较久，适用于标记整理算法。</p>
+<p><strong>分代收集算法</strong><br>该算法根据对象存活周期将内存划分为不同的几块。一般是把Java堆分为新生代和老年代，这样就可以根据各个年代的特点分别采用最合适的收集算法。当前商业虚拟机普遍采用分代收集算法。</p>
+
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/GC算法/">GC算法</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java/">Java</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/内存回收/">内存回收</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/虚拟机/">虚拟机</a></li></ul>
 	</div>
 
       

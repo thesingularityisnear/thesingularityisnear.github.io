@@ -11,12 +11,12 @@
 引用计数器算">
 <meta property="og:type" content="article">
 <meta property="og:title" content="GC算法与内存回收">
-<meta property="og:url" content="http://zhaoshuo.me/2016/07/29/GC算法与内存回收/index.html">
+<meta property="og:url" content="http://zhaoshuo.me/2016/07/17/GC算法与内存回收/index.html">
 <meta property="og:site_name" content="Gooooood">
 <meta property="og:description" content="Java内存回收虽说是自动完成，但当需要排查各种内存溢出问题以及提高系统并发量时，仍然需要对Java的垃圾回收技术进行必要调节与监控。本文主要介绍垃圾收集器的GC算法与内存回收策略。
 对象引用算法GC在回收内存之前首先需要知道对象是否存活，只有那些不需要存活的对象才需要回收。常见判断对象是否存活的方法有两种，一种是引用计数器算法，一种是可达性分析算法，这两种算法在行业内都被广泛使用。
 引用计数器算">
-<meta property="og:updated_time" content="2016-07-29T06:14:42.000Z">
+<meta property="og:updated_time" content="2016-07-29T06:34:04.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="GC算法与内存回收">
 <meta name="twitter:description" content="Java内存回收虽说是自动完成，但当需要排查各种内存溢出问题以及提高系统并发量时，仍然需要对Java的垃圾回收技术进行必要调节与监控。本文主要介绍垃圾收集器的GC算法与内存回收策略。
@@ -202,8 +202,8 @@
       <div class="body-wrap"><article id="post-GC算法与内存回收" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
-      <a href="/2016/07/29/GC算法与内存回收/" class="article-date">
-  	<time datetime="2016-07-29T06:13:03.000Z" itemprop="datePublished">2016-07-29</time>
+      <a href="/2016/07/17/GC算法与内存回收/" class="article-date">
+  	<time datetime="2016-07-17T06:13:03.000Z" itemprop="datePublished">2016-07-17</time>
 </a>
     </div>
   
@@ -281,9 +281,18 @@
     
 <nav id="article-nav">
   
+    <a href="/2016/07/23/Class类文件结构分析/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption"><</strong>
+      <div class="article-nav-title">
+        
+          Class类文件结构分析
+        
+      </div>
+    </a>
   
-    <a href="/2016/07/29/Java内存区域与异常/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">Java内存区域与异常</div>
+  
+    <a href="/2016/07/10/Java对象创建与内存分布/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">Java对象创建与内存分布</div>
       <strong class="article-nav-caption">></strong>
     </a>
   
@@ -318,7 +327,7 @@
 
 <div class="duoshuo">
 	<!-- 多说评论框 start -->
-	<div class="ds-thread" data-thread-key="GC算法与内存回收" data-title="GC算法与内存回收" data-url="http://zhaoshuo.me/2016/07/29/GC算法与内存回收/"></div>
+	<div class="ds-thread" data-thread-key="GC算法与内存回收" data-title="GC算法与内存回收" data-url="http://zhaoshuo.me/2016/07/17/GC算法与内存回收/"></div>
 	<!-- 多说评论框 end -->
 	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
 	<script type="text/javascript">
