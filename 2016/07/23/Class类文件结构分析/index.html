@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" >
+  <title>Class类文件结构分析 | Gooooood</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="Class文件中存储着Java虚拟机指令集和符号表以及若干辅助信息。它使用的是一种平台无关的字节码储存格式，不同的虚拟机实现都可以载入执行这种平台无关的字节码。Java虚拟机不与任何语言绑定，只与Class文件这种特定二进制文件格式关联，原则上任何语言都可以编译成Class文件在Java虚拟机上运行。
+1、Class类文件结构Class文件格式采用一种类似C语言结构体的伪结构来存储数据，这种伪结构">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Class类文件结构分析">
+<meta property="og:url" content="http://zhaoshuo.me/2016/07/23/Class类文件结构分析/index.html">
+<meta property="og:site_name" content="Gooooood">
+<meta property="og:description" content="Class文件中存储着Java虚拟机指令集和符号表以及若干辅助信息。它使用的是一种平台无关的字节码储存格式，不同的虚拟机实现都可以载入执行这种平台无关的字节码。Java虚拟机不与任何语言绑定，只与Class文件这种特定二进制文件格式关联，原则上任何语言都可以编译成Class文件在Java虚拟机上运行。
+1、Class类文件结构Class文件格式采用一种类似C语言结构体的伪结构来存储数据，这种伪结构">
+<meta property="og:updated_time" content="2016-07-29T06:27:52.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Class类文件结构分析">
+<meta name="twitter:description" content="Class文件中存储着Java虚拟机指令集和符号表以及若干辅助信息。它使用的是一种平台无关的字节码储存格式，不同的虚拟机实现都可以载入执行这种平台无关的字节码。Java虚拟机不与任何语言绑定，只与Class文件这种特定二进制文件格式关联，原则上任何语言都可以编译成Class文件在Java虚拟机上运行。
+1、Class类文件结构Class文件格式采用一种类似C语言结构体的伪结构来存储数据，这种伪结构">
+  
+    <link rel="alternative" href="/atom.xml" title="Gooooood" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/blackcat.jpg">
+  
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+</head>
+
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+	<header id="header" class="inner">
+		<a href="/" class="profilepic">
+			
+			<img lazy-src="http://zhaoshuo.me/img/blackcat.jpg" class="js-avatar">
+			
+		</a>
+
+		<hgroup>
+		  <h1 class="header-author"><a href="/">Gooooood</a></h1>
+		</hgroup>
+
+		
+
+		
+			<div class="switch-btn">
+				<div class="icon">
+					<div class="icon-ctn">
+						<div class="icon-wrap icon-house" data-idx="0">
+							<div class="birdhouse"></div>
+							<div class="birdhouse_holes"></div>
+						</div>
+						<div class="icon-wrap icon-ribbon hide" data-idx="1">
+							<div class="ribbon"></div>
+						</div>
+						
+						<div class="icon-wrap icon-link hide" data-idx="2">
+							<div class="loopback_l"></div>
+							<div class="loopback_r"></div>
+						</div>
+						
+						
+						<div class="icon-wrap icon-me hide" data-idx="3">
+							<div class="user"></div>
+							<div class="shoulder"></div>
+						</div>
+						
+					</div>
+					
+				</div>
+				<div class="tips-box hide">
+					<div class="tips-arrow"></div>
+					<ul class="tips-inner">
+						<li>菜单</li>
+						<li>标签</li>
+						
+						<li>友情链接</li>
+						
+						
+						<li>关于我</li>
+						
+					</ul>
+				</div>
+			</div>
+		
+
+		<div class="switch-area">
+			<div class="switch-wrap">
+				<section class="switch-part switch-part1">
+					<nav class="header-menu">
+						<ul>
+						
+							<li><a href="/">主页</a></li>
+				        
+							<li><a href="/categories/随笔">随笔</a></li>
+				        
+							<li><a href="/archives">所有文章</a></li>
+				        
+							<li><a href="/about">关于我</a></li>
+				        
+						</ul>
+					</nav>
+					<nav class="header-nav">
+						<div class="social">
+							
+								<a class="github" target="_blank" href="https://github.com/thesingularityisnear" title="github">github</a>
+					        
+								<a class="weibo" target="_blank" href="http://www.jianshu.com/users/126f0e4a7246/latest_articles" title="weibo">weibo</a>
+					        
+								<a class="mail" target="_blank" href="mailto:gandroid@yeah.net" title="mail">mail</a>
+					        
+						</div>
+					</nav>
+				</section>
+				
+				
+				<section class="switch-part switch-part2">
+					<div class="widget tagcloud" id="js-tagcloud">
+						<a href="/tags/Android/" style="font-size: 16.67px;">Android</a> <a href="/tags/Class/" style="font-size: 10px;">Class</a> <a href="/tags/GC算法/" style="font-size: 10px;">GC算法</a> <a href="/tags/Git/" style="font-size: 13.33px;">Git</a> <a href="/tags/IPC/" style="font-size: 10px;">IPC</a> <a href="/tags/Java/" style="font-size: 20px;">Java</a> <a href="/tags/React-Native/" style="font-size: 10px;">React Native</a> <a href="/tags/SSH/" style="font-size: 10px;">SSH</a> <a href="/tags/VPN/" style="font-size: 10px;">VPN</a> <a href="/tags/hexo/" style="font-size: 10px;">hexo</a> <a href="/tags/代理/" style="font-size: 10px;">代理</a> <a href="/tags/内存/" style="font-size: 13.33px;">内存</a> <a href="/tags/内存回收/" style="font-size: 10px;">内存回收</a> <a href="/tags/内存管理/" style="font-size: 10px;">内存管理</a> <a href="/tags/对象/" style="font-size: 10px;">对象</a> <a href="/tags/异常/" style="font-size: 10px;">异常</a> <a href="/tags/教程/" style="font-size: 13.33px;">教程</a> <a href="/tags/歌词/" style="font-size: 10px;">歌词</a> <a href="/tags/版本管理/" style="font-size: 10px;">版本管理</a> <a href="/tags/科学上网/" style="font-size: 10px;">科学上网</a> <a href="/tags/类加载/" style="font-size: 10px;">类加载</a> <a href="/tags/虚拟机/" style="font-size: 20px;">虚拟机</a> <a href="/tags/资源加载/" style="font-size: 10px;">资源加载</a> <a href="/tags/进程间通信/" style="font-size: 10px;">进程间通信</a>
+					</div>
+				</section>
+				
+				
+				
+				<section class="switch-part switch-part3">
+					<div id="js-friends">
+					
+			          <a target="_blank" class="main-nav-link switch-friends-link" href="http://www.jianshu.com/users/126f0e4a7246/timeline">简书主页</a>
+			        
+			          <a target="_blank" class="main-nav-link switch-friends-link" href="http://blog.csdn.net/thesingularityisnear">CSDN主页</a>
+			        
+			        </div>
+				</section>
+				
+
+				
+				
+				<section class="switch-part switch-part4">
+				
+					<div id="js-aboutme">坐标帝都，专注于Android客户端开发</div>
+				</section>
+				
+			</div>
+		</div>
+	</header>				
+</div>
+
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+  	<div class="overlay">
+  		<div class="slider-trigger"></div>
+  		<h1 class="header-author js-mobile-header hide">Gooooood</h1>
+  	</div>
+	<div class="intrude-less">
+		<header id="header" class="inner">
+			<div class="profilepic">
+			
+				<img lazy-src="http://zhaoshuo.me/img/blackcat.jpg" class="js-avatar">
+			
+			</div>
+			<hgroup>
+			  <h1 class="header-author">Gooooood</h1>
+			</hgroup>
+			
+			<nav class="header-menu">
+				<ul>
+				
+					<li><a href="/">主页</a></li>
+		        
+					<li><a href="/categories/随笔">随笔</a></li>
+		        
+					<li><a href="/archives">所有文章</a></li>
+		        
+					<li><a href="/about">关于我</a></li>
+		        
+		        <div class="clearfix"></div>
+				</ul>
+			</nav>
+			<nav class="header-nav">
+				<div class="social">
+					
+						<a class="github" target="_blank" href="https://github.com/thesingularityisnear" title="github">github</a>
+			        
+						<a class="weibo" target="_blank" href="http://www.jianshu.com/users/126f0e4a7246/latest_articles" title="weibo">weibo</a>
+			        
+						<a class="mail" target="_blank" href="mailto:gandroid@yeah.net" title="mail">mail</a>
+			        
+				</div>
+			</nav>
+		</header>				
+	</div>
+</nav>
+
+      <div class="body-wrap"><article id="post-Class类文件结构分析" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2016/07/23/Class类文件结构分析/" class="article-date">
+  	<time datetime="2016-07-23T06:08:04.000Z" itemprop="datePublished">2016-07-23</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Class类文件结构分析
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Class/">Class</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java/">Java</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/虚拟机/">虚拟机</a></li></ul>
+	</div>
+
+        
+	<div class="article-category tagcloud">
+	<a class="article-category-link" href="/categories/Java虚拟机/">Java虚拟机</a>
+	</div>
+
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Class文件中存储着Java虚拟机指令集和符号表以及若干辅助信息。它使用的是一种平台无关的字节码储存格式，不同的虚拟机实现都可以载入执行这种平台无关的字节码。Java虚拟机不与任何语言绑定，只与Class文件这种特定二进制文件格式关联，原则上任何语言都可以编译成Class文件在Java虚拟机上运行。</p>
+<h2 id="1_u3001Class_u7C7B_u6587_u4EF6_u7ED3_u6784"><a href="#1_u3001Class_u7C7B_u6587_u4EF6_u7ED3_u6784" class="headerlink" title="1、Class类文件结构"></a>1、Class类文件结构</h2><p>Class文件格式采用一种类似C语言结构体的伪结构来存储数据，这种伪结构中只有两种数据类型：无符号数和表。</p>
+<p><strong>1.1 无符号数</strong></p>
+<p>无符号数属于基本数据类型，以u1，u2，u4，u8来分别代表1个字节、2个字节、4个字节和8个字节的无符号数，无符号数可以用来描述数字、索引引用、数量值或者按照UTF-8编码构成字符串值。</p>
+<p><strong>1.2 表</strong></p>
+<p>表是由多个无符号数或者其他表作为数据项构成的复合数据类型。表用于描述有层次关系的复合结构的数据，整个Class文件本质上就是一张表。Class中以_info结尾代表一张表。</p>
+<h2 id="2_u3001Class_u5B57_u8282_u7801_u89E3_u6790"><a href="#2_u3001Class_u5B57_u8282_u7801_u89E3_u6790" class="headerlink" title="2、Class字节码解析"></a>2、Class字节码解析</h2><p>Class文件是一组以8位字节为基础单位的二进制流，各个数据项目严格的按照顺序紧凑的排列在Class文件中。当遇到占用8字节以上空间的数据项时，则会按照高位在前的方式分割成若干个8位字节进行存储。Class内部不包含任何分隔符，数据存储顺序数量都被严格限定，不允许任何改动。下面看看具体数据项的含义：</p>
+<p><strong>2.1 魔数（Magic Number）</strong></p>
+<p>每个Class文件的头4个字节称为魔数（Magic Number），它唯一作用就是用来确定文件是否能被虚拟机接受。</p>
+<p>很多文件存储标准中都用魔数进行身份标识，如图片gif，jpeg都在文件头部中存储着魔数。使用魔数而不是用扩展名来进行识别主要是基于安全考虑，因为扩展名可以被随意改动。</p>
+<p><strong>2.2 版本号</strong></p>
+<p>接下来的4个字节存储着Class文件的版本号，第五第六个字节为次版本号（Minor Version），第七第八为主版本号（Major Version）。版本号主要用于版本控制，高版本的JDK能向下兼容以前版本的Class文件，但不能运行以后版本的Class文件。</p>
+<p><strong>2.3 常量池入口</strong></p>
+<p>紧接着版本号之后的就是常量池入口，常量池入口后面还必须有一个u2数据项作为常量池容量计数器（因为常量池数量不固定）。</p>
+<p>常量池是一个表类型的数据项，相当于Class文件的资源仓库，与Class文件其他项目关联最多，占用Class空间最大的数据项之一，且是第一个出现的表类型数据项目。</p>
+<p>常量池主要存储两大类常量：字面量（Literal）和符号引用（Symbolic References）</p>
+<p>字面量相当于Java语言中的常量概念，比如字符串，声明为final的常量值。<br>符号引用则属于编译原理方面的概念包括三类常量：</p>
+<ul>
+<li>类和接口的全限定名（Fully Qualified Name）</li>
+<li>字段的名称和描述符（Descriptor）</li>
+<li>方法的名称和描述符</li>
+</ul>
+<p>Class文件不会保存各个方法字段的最终内存布局信息，因为这些字段、方法和符号引用不经过运行期转换（动态连接）的话无法得到真正内存入口地址，也就无法被虚拟机使用。当虚拟机运行时，需要从常量池获得对应的符号引用，再在类创建或运行时解析翻译到具体的内存地址之中。</p>
+<p>常量池中的每一项常量都是一个表（JDK1.7中有14种）。包括UTF-8编码的字符串表，整型字面量表，浮点型字面量表，长整型字面常量表，类和接口的符号引用表，字段符号引用表，类中的方法符号引用表，接口中方法符号引用表等等。这些表都会有各自不同的结构。</p>
+<p><strong>2.4 访问标志</strong></p>
+<p>常量池之后就是由两个字节代表的访问标识（access flags）这些标识用于识别一些类或者接口层次的访问信息，包括这个Class是类还是接口；是否定义为public；是否定义为abstract类型；是否被final修饰。</p>
+<p><strong>2.5 类索引、父类索引、接口索引</strong></p>
+<p>访问标志位之后就是u2类型的类索引，父类索引和接口索引集合。Class文件由这三项数据确定这个类的继承关系。这三项数据（u2类型的索引值）各指向类型为CONSTANT_Class_info的类描述符常量。</p>
+<p><strong>2.6 字段表集合</strong></p>
+<p>字段表用于描述接口或者类中声明的变量。字段（field）包括类级变量以及实例级变量，但不包括在方法内部声明的局部变量。字段表中字段的各种描述信息（作用域比如public，private，是否被final，static修饰，是否可序列化等）均使用标志位表示，名称则引用常量池中的常量来描述。</p>
+<p><strong>2.7 方法表集合</strong></p>
+<p>在方法表中，方法的描述和字段的描述基本一致，依次包括访问标志（access_flags）、名称索引（name_index）、描述符索引（descriptor_index）、属性表集合（attributes）几项。</p>
+<p>方法中的代码经过编译器编译成字节码指令后存放在方法属性表集合中一个名为“Code”的属性里面。</p>
+<p>如果父类方法在子类中没有被重写，方法表集合中就不会出现来自父类的方法信息。</p>
+<p><strong>2.8 属性表集合</strong></p>
+<p>Class文件、字段表、方法表都可以携带自己的属性表集合，以用于描述某些场景专有的信息。</p>
+<p>为了能正确解析Class文件，在Java SE 7中预定义了21项属性，虚拟机在运行时会忽略他不认识的属性。</p>
+<h2 id="3_u3001_u5B57_u8282_u7801_u6307_u4EE4"><a href="#3_u3001_u5B57_u8282_u7801_u6307_u4EE4" class="headerlink" title="3、字节码指令"></a>3、字节码指令</h2><p>Java虚拟机的指令是由一个字节长度的、代表着某种特定操作含义的数字（操作码，Opcode）以及跟随其后的零个至多个代表此操作所需要的参数（操作数，Operands）构成。</p>
+<p>常用指令：</p>
+<ul>
+<li>加载存储指令，将数据在栈帧中的局部变量表和操作数栈之间来回传输</li>
+<li>运算指令，对两个操作数栈上的值进行某种特定运算，并把结果重新写入操作栈，包括加减乘除逻辑与或非</li>
+<li>类型转换指令，将两种不同的数值类型进行相互转换，这些转换一般用于实现用户代码中的显式类型转换操作，或者用来处理字节码指令集中数据类型相关指令代码无法与数据类型一一对应的问题。另，类型转换指令永远不可能导致虚拟机运行异常。</li>
+<li>对象创建与访问指令，创建对象数组访问对象等</li>
+<li>操作数栈管理指令，Java虚拟机提供了一些用于直接操作操作数栈的指令，包括入栈，出栈，栈顶端两个数据交换</li>
+<li>控制转移指令，可以让Java虚拟机有条件或无条件地从指定的位置指令而不是控制转移指令的下一条指令继续执行程序，包括条件分支ifxxx，复合条件分支，无条件分支goto等。</li>
+<li>方法调用和返回指令，调用对象实例方法，调用接口方法，调用类方法，运行时动态解析出调用点限定符所引用的方法，返回指令根据返回值类型区分</li>
+<li>异常处理指令，Java程序中显式抛出异常的操作（throw）都是由athrow指令实现，异常处理不是字节码指令实现，而是采用异常表实现</li>
+<li>同步指令，方法级同步和方法内部一段指令序列的同步（通过管程Monitor支持），执行线程要求先持有管程，然后才能执行方法，当方法执行完成后释放管程；方法执行期间，执行线程持有管程，任何一个线程都无法再获取同一个管程</li>
+</ul>
+
+      
+    </div>
+    
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2016/07/24/虚拟机类加载机制/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption"><</strong>
+      <div class="article-nav-title">
+        
+          虚拟机类加载机制
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2016/07/10/Java对象创建与内存分布/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">Java对象创建与内存分布</div>
+      <strong class="article-nav-caption">></strong>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+<div class="share_jia">
+	<!-- JiaThis Button BEGIN -->
+	<div class="jiathis_style">
+		<span class="jiathis_txt">分享到: &nbsp; </span>
+		<a class="jiathis_button_facebook"></a> 
+    <a class="jiathis_button_twitter"></a>
+    <a class="jiathis_button_plus"></a> 
+    <a class="jiathis_button_tsina"></a>
+		<a class="jiathis_button_cqq"></a>
+		<a class="jiathis_button_douban"></a>
+		<a class="jiathis_button_weixin"></a>
+		<a class="jiathis_button_tumblr"></a>
+    <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+	</div>
+	<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1405949716054953" charset="utf-8"></script>
+	<!-- JiaThis Button END -->
+</div>
+
+
+
+
+
+
+<div class="duoshuo">
+	<!-- 多说评论框 start -->
+	<div class="ds-thread" data-thread-key="Class类文件结构分析" data-title="Class类文件结构分析" data-url="http://zhaoshuo.me/2016/07/23/Class类文件结构分析/"></div>
+	<!-- 多说评论框 end -->
+	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+	<script type="text/javascript">
+	var duoshuoQuery = {short_name:"zhaoshuo"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		 || document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+	<!-- 多说公共JS代码 end -->
+</div>
+
+
+
+
+</div>
+      <footer id="footer">
+  <div class="outer">
+    <div id="footer-info">
+    	<div class="footer-left">
+    		&copy; 2016 Gooooood
+    	</div>
+      	<div class="footer-right">
+      		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
+      	</div>
+    </div>
+  </div>
+</footer>
+    </div>
+    
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css" type="text/css">
+
+
+<script>
+	var yiliaConfig = {
+		fancybox: true,
+		mathjax: true,
+		animate: true,
+		isHome: false,
+		isPost: true,
+		isArchive: false,
+		isTag: false,
+		isCategory: false,
+		open_in_new: false
+	}
+</script>
+<script src="http://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js" type="text/javascript"></script>
+<script src="/js/main.js" type="text/javascript"></script>
+
+
+
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    }
+});
+
+MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';                 
+    }       
+});
+</script>
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+  </div>
+</body>
+</html>

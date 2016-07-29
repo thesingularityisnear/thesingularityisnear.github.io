@@ -116,7 +116,7 @@
 				
 				<section class="switch-part switch-part2">
 					<div class="widget tagcloud" id="js-tagcloud">
-						<a href="/tags/Android/" style="font-size: 20px;">Android</a> <a href="/tags/IPC/" style="font-size: 10px;">IPC</a> <a href="/tags/React-Native/" style="font-size: 10px;">React Native</a> <a href="/tags/VPN/" style="font-size: 10px;">VPN</a> <a href="/tags/hexo/" style="font-size: 10px;">hexo</a> <a href="/tags/代理/" style="font-size: 10px;">代理</a> <a href="/tags/内存管理/" style="font-size: 10px;">内存管理</a> <a href="/tags/教程/" style="font-size: 15px;">教程</a> <a href="/tags/歌词/" style="font-size: 10px;">歌词</a> <a href="/tags/科学上网/" style="font-size: 10px;">科学上网</a> <a href="/tags/资源加载/" style="font-size: 10px;">资源加载</a> <a href="/tags/进程间通信/" style="font-size: 10px;">进程间通信</a>
+						<a href="/tags/Android/" style="font-size: 16.67px;">Android</a> <a href="/tags/Class/" style="font-size: 10px;">Class</a> <a href="/tags/GC算法/" style="font-size: 10px;">GC算法</a> <a href="/tags/Git/" style="font-size: 13.33px;">Git</a> <a href="/tags/IPC/" style="font-size: 10px;">IPC</a> <a href="/tags/Java/" style="font-size: 20px;">Java</a> <a href="/tags/React-Native/" style="font-size: 10px;">React Native</a> <a href="/tags/SSH/" style="font-size: 10px;">SSH</a> <a href="/tags/VPN/" style="font-size: 10px;">VPN</a> <a href="/tags/hexo/" style="font-size: 10px;">hexo</a> <a href="/tags/代理/" style="font-size: 10px;">代理</a> <a href="/tags/内存/" style="font-size: 13.33px;">内存</a> <a href="/tags/内存回收/" style="font-size: 10px;">内存回收</a> <a href="/tags/内存管理/" style="font-size: 10px;">内存管理</a> <a href="/tags/对象/" style="font-size: 10px;">对象</a> <a href="/tags/异常/" style="font-size: 10px;">异常</a> <a href="/tags/教程/" style="font-size: 13.33px;">教程</a> <a href="/tags/歌词/" style="font-size: 10px;">歌词</a> <a href="/tags/版本管理/" style="font-size: 10px;">版本管理</a> <a href="/tags/科学上网/" style="font-size: 10px;">科学上网</a> <a href="/tags/类加载/" style="font-size: 10px;">类加载</a> <a href="/tags/虚拟机/" style="font-size: 20px;">虚拟机</a> <a href="/tags/资源加载/" style="font-size: 10px;">资源加载</a> <a href="/tags/进程间通信/" style="font-size: 10px;">进程间通信</a>
 					</div>
 				</section>
 				
@@ -193,6 +193,548 @@
 </nav>
 
       <div class="body-wrap">
+  
+    <article id="post-GC算法与内存回收" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2016/07/29/GC算法与内存回收/" class="article-date">
+  	<time datetime="2016-07-29T06:13:03.000Z" itemprop="datePublished">2016-07-29</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/07/29/GC算法与内存回收/">GC算法与内存回收</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Java内存回收虽说是自动完成，但当需要排查各种内存溢出问题以及提高系统并发量时，仍然需要对Java的垃圾回收技术进行必要调节与监控。本文主要介绍垃圾收集器的GC算法与内存回收策略。</p>
+<h2 id="u5BF9_u8C61_u5F15_u7528_u7B97_u6CD5"><a href="#u5BF9_u8C61_u5F15_u7528_u7B97_u6CD5" class="headerlink" title="对象引用算法"></a>对象引用算法</h2><p>GC在回收内存之前首先需要知道对象是否存活，只有那些不需要存活的对象才需要回收。常见判断对象是否存活的方法有两种，一种是引用计数器算法，一种是可达性分析算法，这两种算法在行业内都被广泛使用。</p>
+<p><strong>引用计数器算法</strong><br>给对象添加一个引用计数器，每当有一个地方引用它时就+1；当引用失效时就-1；任何时刻计数器为0则表示对象不再被使用。</p>
+<p>引用计数器算法实现简单，判定效率较高，在一些其他语言与游戏脚本中广泛使用。不过它很难解决对象之间相互循环引用的问题。</p>
+<p><strong>可达性分析算法</strong><br>该算法基本思想是：基本通过一系列被称为“GC Roots”的对象作为起始点，从这些节点开始向下搜索，搜索所走过的路径称为引用链（Reference Chain），当一个对象到GC Roots没有任何引用链相连（用图论说就是从GCRoots到这个对象不可达），则证明此对象不可用。</p>
+<p>可达性分析算法在Java，C#等语言的主流实现中用来判定对象是否可用。在Java语言中可作为GC Roots的对象包括：虚拟机栈中引用的对象，方法区中静态属性引用的对象，方法区中常量引用的对象。本地方法栈中JNI引用的对象。</p>
+<h2 id="Java_u4E2D_u7684_u56DB_u79CD_u5F15_u7528"><a href="#Java_u4E2D_u7684_u56DB_u79CD_u5F15_u7528" class="headerlink" title="Java中的四种引用"></a>Java中的四种引用</h2><p>为了描述：一些对象在内存空间足够时则能保存在内存中，当内存空间紧张时则释放掉这些对象。Java将引用的概念扩充为4中，分别为强引用（Strong Reference）、软引用（Soft Reference）、弱引用（Weak Reference）、虚引用（Phantom Reference），这四种引用强度依次减弱。</p>
+<p><strong>强引用</strong><br>强引用指在代码中普遍存在的类似<code>Object obj = new Object()</code>这类的引用，只要强引用还存在，垃圾收集器就永远不会回收掉改引用的对象。</p>
+<p><strong>软引用</strong><br>软引用用来描述一些还有用但并非必须的对象。对于软引用关联的对象，在系统将要发生内存溢出异常之前，将会把这些对象列进回收范围之中进行二次回收。如果这次回收还没有足够的内存，才会抛出内存溢出异常。</p>
+<p><strong>弱引用</strong><br>弱引用用来描述非必须的对象，但它的强度比软引用要更弱一些，被弱引用关联的对象只能生存到下一次垃圾收集发生之前。当垃圾收集工作时，无论当前内存是否够用，都会回收掉只被弱引用关联的对象。</p>
+<p><strong>虚引用</strong><br>虚引用也被称为幽灵引用或者幻影引用，它是最弱的一种引用关系。一个对象是否有虚引用的存在，完全不会对其生存时间构成影响也无法通过虚引用来取得一个对象实例。为一个对象设置虚引用关联的唯一目的就是能在这个对象被收集器回收之前收到一个系统通知。</p>
+<h2 id="u5BF9_u8C61_u5185_u5B58_u56DE_u6536"><a href="#u5BF9_u8C61_u5185_u5B58_u56DE_u6536" class="headerlink" title="对象内存回收"></a>对象内存回收</h2><p>一个对象即使被可达性分析算法标记为不可达也并非立即被回收，至少要标记两次才有可能被回收：</p>
+<p>如果对象在进行可达性分析后发现没有与GC Roots相连接的引用链，那么它就会被第一次标记并且进行一次筛选，筛选的条件是此对象是否有必要执行finalize()方法。当对象没有覆盖finalize()方法，或者finalize()方法已经被虚拟机调用过，虚拟机将这两种情况视为没有必要执行。</p>
+<p>如果这个对象有必要执行finalize()方法，那么这个对象会被放置到一个F-Queue的队列中，并在稍后由一个虚拟机自动创建的低优先级的Finalizer线程去执行它。不过这里的执行仅仅是虚拟机插法此方法，但并不承诺会等待它运行完成。因为如果finalize执行时间较长或发生死循环会导致F-Queue中的其他对象用于处于等待状态进而导致内存回收系统的崩溃。</p>
+<p>稍后GC将对F-Queue中的对象进行第二次小范围的标记，如果对象在finilize中重新建立起引用链连接，那么在第二次标记中就会被移除即将回收的集合；如果对象这时候仍然没有引用链，那么基本上它就要被回收了。</p>
+<p>注意：任何一个对象的finalize方法都只会被系统调用一次，如果下一次GC回收，它的finalize方法将不会被执行。</p>
+<h2 id="u65B9_u6CD5_u533A_u5185_u5B58_u56DE_u6536"><a href="#u65B9_u6CD5_u533A_u5185_u5B58_u56DE_u6536" class="headerlink" title="方法区内存回收"></a>方法区内存回收</h2><p>像程序计数器、虚拟机栈、本地方法栈都是随线程而生，随线程而亡，不需要进行内存回收。方法区术语HotSpot虚拟机的永久带，Java虚拟机规范规定可以不对方法区进行回收。而且对于永久带回收内存的效率比较低。</p>
+<p>永久带垃圾收集主要包括两部分：废弃的常量、无用的类。常量池中的字符串，类、方法，字段的符号引用如果不在被使用则需要清理出常量池。</p>
+<p>判定一个常量是否需要回收比较简单，判断一个类是否需要回收则条件比较苛刻，需要同时满足三个条件：</p>
+<ul>
+<li>该类所有实例都被回收</li>
+<li>加载该类的ClassLoader已被回收</li>
+<li>该类对应的java.lang.Class对象没有在任何地方被引用，无法在任何地方通过访问该类的方法</li>
+</ul>
+<h2 id="u5783_u573E_u6536_u96C6_u7B97_u6CD5"><a href="#u5783_u573E_u6536_u96C6_u7B97_u6CD5" class="headerlink" title="垃圾收集算法"></a>垃圾收集算法</h2><p><strong>标记-清除算法</strong><br>首先标记出所需要回收的对象，在标记完成后统一回收所有被标记（前面介绍过）的对象。</p>
+<p>该算法有两个不足，一是效率问题，标记和清除的效率都不高，二是空间问题，标记清除之后会产生大量不连续的内存碎片，空间碎片太多可能会导致以后程序运行过程中需要分配较大对象时无法找到足够的连续内存而不得不提前触发另一次垃圾回收。</p>
+<p><strong>复制算法</strong><br>该算法将可用内存按容量大小分为大小相等的两块，每次只使用其中一块。当这一块内存用完了就将还存活的对象复制到另一块上面，这样内存分配时就不用考虑内存碎片等复杂情况，只需要移动堆顶指针，按顺序分配内存即可。</p>
+<p>复制算法解决了标记-清除算法的效率问题，实现简单，运行效率高，但将内存缩小为一半代价过高。复制算法在对象存活率较高时会进行过多复制，效率会降低，而且如果不想浪费50%的内存空间就需要额外的空间进行分配担保，以应对被使用内存对象100%存活的极端情况。</p>
+<p>新生代在每次垃圾回收时都有大量对象死亡所以特别适用复制算法，而且该算法的改进版不需要按照1:1的比例划分内存空间，只需要按经验值划分即可。</p>
+<p><strong>标记-整理算法</strong><br>该算法首先标记出所需要回收的对象，在标记完成后统一后将所有存活的对象统一移动到一端，然后直接清理掉边界以外的内存。</p>
+<p>老年代中的对象存活时间都比较久，适用于标记整理算法。</p>
+<p><strong>分代收集算法</strong><br>该算法根据对象存活周期将内存划分为不同的几块。一般是把Java堆分为新生代和老年代，这样就可以根据各个年代的特点分别采用最合适的收集算法。当前商业虚拟机普遍采用分代收集算法。</p>
+
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/GC算法/">GC算法</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java/">Java</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/内存回收/">内存回收</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/虚拟机/">虚拟机</a></li></ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+	<a class="article-category-link" href="/categories/Java虚拟机/">Java虚拟机</a>
+	</div>
+
+
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+
+
+  
+    <article id="post-Java内存区域与异常" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2016/07/29/Java内存区域与异常/" class="article-date">
+  	<time datetime="2016-07-29T04:15:51.000Z" itemprop="datePublished">2016-07-29</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/07/29/Java内存区域与异常/">Java内存区域与异常</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Java虚拟机在运行时会把其管理的内存划分为若干不同的数据区域。《Java虚拟机规范》规定的数据区域通常包括程序计数器、Java虚拟机栈、本地方法栈、Java堆、方法区、运行时常量池以及直接内存。这些区域都会有各自不同的生存周期以及各自不同的用途，本文主要介绍这些内存区域以及各个内存区域可能抛出的异常。</p>
+<h2 id="u7A0B_u5E8F_u8BA1_u6570_u5668"><a href="#u7A0B_u5E8F_u8BA1_u6570_u5668" class="headerlink" title="程序计数器"></a>程序计数器</h2><p>程序计数器相当于当前线程所执行字节码的行号指示器。字节码解释器通过改变这个计数器来选取下一条需要执行的字节码指令，程序的循环、跳转、异常处理、线程切换都需要依赖这个计数器来完成。</p>
+<p>一个Java虚拟机内部可以有多个线程，每个线程都会有单独的程序计数器，程序计数器属于线程私有内存，各个计数器之间互不影响。</p>
+<p>程序计数器记录的只能是Java方法编译出的字节码指令地址，对于Native方法，则计数器为空。程序计数器不会出现OutOfMemoryError异常。</p>
+<h2 id="Java_u865A_u62DF_u673A_u6808"><a href="#Java_u865A_u62DF_u673A_u6808" class="headerlink" title="Java虚拟机栈"></a>Java虚拟机栈</h2><p>Java虚拟机栈就是我们经常说的堆栈中的栈内存。虚拟机栈描述的是Java方法执行的内存模型：每个方法在执行时都会创建一个栈帧(Stack Frame)用于存储局部变量表、操作数栈、动态链接、方法出口等信息。每个方法从调用到执行完成的过程都对应着一个栈帧在虚拟机栈中从入栈到出栈的过程。</p>
+<p>虚拟机栈中有一个局部变量表，局部变量表存放了编译期可知的各种基本数据类型（boolean、byte、char、short、int、float、long、double）、对象引用和指向一条字节码指令地址的returnAddress类型。</p>
+<p>虚拟机栈是线程私有的，其生命周期与线程相同。此区域可能会出现两种异常：如果请求栈深度大于虚拟机最大允许栈深度则抛出StackOverflowError异常；如果虚拟机栈在动态扩展时无法申请到足够的内存则会抛出OutOfMemoryError异常。</p>
+<h2 id="u672C_u5730_u65B9_u6CD5_u6808"><a href="#u672C_u5730_u65B9_u6CD5_u6808" class="headerlink" title="本地方法栈"></a>本地方法栈</h2><p>同Java虚拟机栈相似，本地方法栈是Native方法执行的内存模型，其内部也会抛出StackOverflowError和OutOfMemory异常。</p>
+<h2 id="Java__u5806"><a href="#Java__u5806" class="headerlink" title="Java 堆"></a>Java 堆</h2><p>Java堆用来存放虚拟机在运行时创建的Java对象实例。Java虚拟机规范规定：所有的对象实例以及数组都要在堆上分配。不过现在很多技术比如Just InTime（及时编译），允许在栈中分配对象内存。</p>
+<p>Java堆内存被所有线程共享，任何线程都可以在上面创建对象。内存回收（GC）主要在Java堆上进行。</p>
+<p>Java堆内存也是虚拟机所管理的内存最大的一块。其内存只要逻辑上连续即可，允许物理上不连续。如果在创建对象时堆内存没有足够的内存分配会抛出OutOfMemoryError异常。</p>
+<h2 id="u65B9_u6CD5_u533A"><a href="#u65B9_u6CD5_u533A" class="headerlink" title="方法区"></a>方法区</h2><p>方法区用来存储已被虚拟机加载的类信息、常量、静态变量、及时编译器编译后的代码等数据，被所有线程共享。</p>
+<p>当方法区无法满足内存分配时，会抛出OutOfMemoryError异常。</p>
+<h2 id="u8FD0_u884C_u65F6_u5E38_u91CF_u6C60"><a href="#u8FD0_u884C_u65F6_u5E38_u91CF_u6C60" class="headerlink" title="运行时常量池"></a>运行时常量池</h2><p>运行时常量池是方法区的一部分，Class文件中的常量池（Constant Pool Table）在类加载后会放到运行时常量池中。</p>
+<p>Class常量池用于存放编译期生成的各种字面常量和符号引用。运行时常量池与Class常量池的区别就是动态性。运行时常量池不仅仅允许编译期放入常量池，也允许运行时将新的常量放入常量池。而Class常量池只能在编译期生成。Java虚拟机规范对Class常量池要求严格，对运行时常量池的要求则比较宽松。</p>
+<p>当常量池无法再申请到内存空间时会抛出OutOfMemoryError异常。</p>
+<h2 id="u76F4_u63A5_u5185_u5B58"><a href="#u76F4_u63A5_u5185_u5B58" class="headerlink" title="直接内存"></a>直接内存</h2><p>直接内存也就是我们本机可用的物理内存空间，不属于任何Java虚拟机，但任何虚拟机都可以在上面操作。例如，Java虚拟机可以通过NIO包中提供的方法直接在物理内存中分配。</p>
+<p>当Java虚拟机要求分配的内存大于本机物理内存时就会抛出OutOfMemoryError异常。</p>
+<h2 id="u5185_u5B58_u6EA2_u51FA_u4E0E_u5185_u5B58_u6CC4_u9732_u7684_u533A_u522B"><a href="#u5185_u5B58_u6EA2_u51FA_u4E0E_u5185_u5B58_u6CC4_u9732_u7684_u533A_u522B" class="headerlink" title="内存溢出与内存泄露的区别"></a>内存溢出与内存泄露的区别</h2><p><strong>内存溢出</strong><br>内存溢出是指分配对象的内存超过虚拟机所允许的最大内存，此时所有的对象实例均有用。优化方案就是尝试减少程序运行时内存消耗。</p>
+<p><strong>内存泄露</strong><br>某些对象不再有用，但由于不正确的引用关系造成对象内存无法释放，最终导致所有对象的内存超过虚拟机所允许的最大值。所以要检查每个对象的生命周期，确保长生命周期对象引用短生命周期时释放内存。</p>
+
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java/">Java</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/内存/">内存</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/异常/">异常</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/虚拟机/">虚拟机</a></li></ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+	<a class="article-category-link" href="/categories/Java虚拟机/">Java虚拟机</a>
+	</div>
+
+
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+
+
+  
+    <article id="post-虚拟机类加载机制" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2016/07/24/虚拟机类加载机制/" class="article-date">
+  	<time datetime="2016-07-24T06:15:05.000Z" itemprop="datePublished">2016-07-24</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/07/24/虚拟机类加载机制/">虚拟机类加载机制</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>在Java语言中，类型的加载、连接和初始化过程都是在程序运行期间完成。虚拟机在运行期间会把描述类的数据从Class文件中加载到内存，并对数据进行校验、转换解析和初始化，最终形成可以被虚拟机知己网使用的Java类型，这就是虚拟机的类加载机制。</p>
+<h2 id="1_u3001_u7C7B_u52A0_u8F7D_u8FC7_u7A0B"><a href="#1_u3001_u7C7B_u52A0_u8F7D_u8FC7_u7A0B" class="headerlink" title="1、类加载过程"></a>1、类加载过程</h2><p>类从被加载到内存开始，到卸载出内存为止，其生命周期包括：加载（Loading）、验证（Verification）、准备（Preparation）、解析（Resolution）、初始化（Initialization）、使用（Using）和卸载（Unloading）7个阶段。</p>
+<p><strong>1.1 加载</strong></p>
+<p>虚拟机规范没有对类加载的时机做规定，但要求五种情况必须触发类初始化，而在类初始化之前必定会先被加载：</p>
+<ol>
+<li>创建一个类，调用类的静态方法静态变量时，如果类没有进行初始化，则需要先触发其初始化</li>
+<li>使用java.lang.reflect包的方法对类进行反射调用时，如果类没有进行初始化则需要先触发其初始化</li>
+<li>初始化一个类时如果其父类还没有进行初始化，则需要先触发其父类的初始化</li>
+<li>当虚拟机启动时，用户需要指定一个要执行的主类（包含main方法的类），虚拟机要先初始化这个类</li>
+<li>当使用JDK1.7动态语言时，如果一个java.lang.invoke.MethodHandle实例最后的解析结果REF_getStatic、REF_putStatic、REF_invokeStatic的方法句柄，并且这个方法句柄所对应的类没有进行初始化，则需要先触发其初始化。</li>
+</ol>
+<p>虚拟机需要完成三件事：</p>
+<ol>
+<li>通过类得全限定名来获取定义此类额二进制字节流（可以从zip包读取，如JAR，WAR，可以从网络中获取，可以动态生成JSP，可以从数据库中读取）</li>
+<li>将这个字节流所代表的静态存储结构转化为方法区的运行时数据结构</li>
+<li>在内存中生成一个代表这个类的java.lang.Class对象，作为方法区这个类的各种数据访问的入口</li>
+</ol>
+<p>加载阶段，既可以使用系统提供的引导类加载器来完成，又可以使用用户自定义的类加载器完成。</p>
+<p><strong>1.2 验证</strong></p>
+<p>验证是连接的第一步，目的是确保Class文件的字节流中包含的信息符合当前虚拟机的要求，并且不会危害虚拟机自身安全。</p>
+<p>验证阶段包括4部分：</p>
+<ol>
+<li>文件格式校验，验证字节流是否符合Class文件格式规范，版本号是否可以被虚拟机接受等等</li>
+<li>元数据校验，对字节码描述信息进行语义分析，以保证描述信息符合Java语言规范</li>
+<li>字节码校验，通过数据流和控制流分析，确定程序语义是合法的、符合逻辑的，保证程序方法在运行期间不会做出危害虚拟机的事</li>
+<li>符号引用校验，在虚拟机将符号引用转化为直接引用时（引用类方法字段等）需要进行符号引用校验，可以看做是对类自身以外（常量池的各种符号引用）的信息进行匹配性校验，目的是确保解析动作能正常执行，如果无法通过符号引用验证则会抛出类似java.lang.IllegalAccessError，java.lang.NoSuchFieldError，java.lang.NoSuchMethodError等。</li>
+</ol>
+<p><strong>1.3 准备</strong></p>
+<p>准备阶段为类变量（不包括实例变量）分配内存并设置类变量初始值的阶段，这些变量所使用的内存都将在方法区中进行分配。</p>
+<p>此处所设置的类变量初始值，并不是程序代码中所设置的初始值，而是为类变量赋0值，例如int类型为0，boolean类型为false。根据程序代码设置初始值是在初始化阶段发生。</p>
+<p><strong>1.4 解析</strong></p>
+<p>解析阶段是虚拟机将常量池内的符号引用替换为直接引用的过程。</p>
+<p>符号引用以一组符号来描述所引用的目标，符号可以是任何形式的字面量（类接口，字段方法常量等），只要使用时能无歧义地定位到目标即可。符号引用与虚拟机实现的内存布局无关，引用的目标并不一定已经加载到内存。</p>
+<p>直接引用可以是直接指向目标的指针、相对偏移量或是一个能间接定位到目标的句柄。直接引用是和虚拟机实现的内存布局相关，同一个符号引用在不同虚拟机实例上翻译出来的直接引用一般不会相同。</p>
+<p><strong>1.5 初始化</strong></p>
+<p>初始化是类加载过程的最后一步，从这里开始执行Java程序代码。在准备阶段变量已经赋值过一次系统要求的初始值，初始化阶段则是根据程序代码去初始化类变量，同一个类加载器下一个类只会被初始化一次。</p>
+<h2 id="2_u3001_u7C7B_u52A0_u8F7D_u5668"><a href="#2_u3001_u7C7B_u52A0_u8F7D_u5668" class="headerlink" title="2、类加载器"></a>2、类加载器</h2><p>类加载器功能就是通过一个类的全限定名来获取描述此类的二进制字节流。Java允许程序自己去实现类加载器。当前自定义类加载器可以实现OSGI，热部署、代码加密等诸多功能。</p>
+<p>Java中有两种类加载器，一种是启动类加载器（Bootstrap ClassLoader，使用C++实现）是虚拟机的一部分，另一种是其他类加载器，独立于虚拟机外部，并且全部继承自java.lang.ClassLoader。</p>
+<ul>
+<li><p>启动类加载器，负责将存放在<java_home>\lib目录中的类库加载到虚拟机内存中，无法被程序调用，用户编写自定义类加载器时如需把加载请求委派给引导类加载器直接使用null代替。</java_home></p>
+</li>
+<li><p>扩展类加载器（Extension ClassLoader），负责加载<java_home>\lib\ext目录中或者被java.ext.dirs系统变量指定的路径中的所有类库，开发者可以直接使用扩展类加载器。</java_home></p>
+</li>
+<li><p>应用程序类加载器（Application ClassLoader），系统默认类加载器getSystemClassLoader()方法的返回值，负责加载用户（ClassPath）路径上所指定的类库，开发者可以直接使用这个类加载器</p>
+</li>
+</ul>
+<p>类加载器中有一个概念是双亲委派模型，其工作过程：如果一个类加载器收到了加载请求，它首先不会自己去尝试加载这个类，而是把这个请求委派给父类加载器去完成，每一个层次的类加载器都是如此，因此所有的加载请求最终都应该传送到顶层的启动类加载器中，只有当父类加载器反馈自己无法完成这个加载请求（它在搜索范围中没有找到所需要的类）时，子加载器才会尝试自己去加载。</p>
+<p>双亲委派模型有一个好处就是Java类随着它的类加载器一起具备了一种带有优先级的层次关系。例如，java.lang.Object，无论哪个类加载器加载最终都会交给最顶层的类加载器加载，因此Object在各种加载器环境中都是一个类（判断类是否相同，需要同一个类加载器加载的同一个Class文件，缺一不可）。</p>
+<p>双亲委派模型并不是必须，当前很多JNDI，代码热部署，模块热部署的应用并不符合双亲委派模型原则的行为。</p>
+
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java/">Java</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/类加载/">类加载</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/虚拟机/">虚拟机</a></li></ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+	<a class="article-category-link" href="/categories/Java虚拟机/">Java虚拟机</a>
+	</div>
+
+
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+
+
+  
+    <article id="post-Class类文件结构分析" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2016/07/23/Class类文件结构分析/" class="article-date">
+  	<time datetime="2016-07-23T06:08:04.000Z" itemprop="datePublished">2016-07-23</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/07/23/Class类文件结构分析/">Class类文件结构分析</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Class文件中存储着Java虚拟机指令集和符号表以及若干辅助信息。它使用的是一种平台无关的字节码储存格式，不同的虚拟机实现都可以载入执行这种平台无关的字节码。Java虚拟机不与任何语言绑定，只与Class文件这种特定二进制文件格式关联，原则上任何语言都可以编译成Class文件在Java虚拟机上运行。</p>
+<h2 id="1_u3001Class_u7C7B_u6587_u4EF6_u7ED3_u6784"><a href="#1_u3001Class_u7C7B_u6587_u4EF6_u7ED3_u6784" class="headerlink" title="1、Class类文件结构"></a>1、Class类文件结构</h2><p>Class文件格式采用一种类似C语言结构体的伪结构来存储数据，这种伪结构中只有两种数据类型：无符号数和表。</p>
+<p><strong>1.1 无符号数</strong></p>
+<p>无符号数属于基本数据类型，以u1，u2，u4，u8来分别代表1个字节、2个字节、4个字节和8个字节的无符号数，无符号数可以用来描述数字、索引引用、数量值或者按照UTF-8编码构成字符串值。</p>
+<p><strong>1.2 表</strong></p>
+<p>表是由多个无符号数或者其他表作为数据项构成的复合数据类型。表用于描述有层次关系的复合结构的数据，整个Class文件本质上就是一张表。Class中以_info结尾代表一张表。</p>
+<h2 id="2_u3001Class_u5B57_u8282_u7801_u89E3_u6790"><a href="#2_u3001Class_u5B57_u8282_u7801_u89E3_u6790" class="headerlink" title="2、Class字节码解析"></a>2、Class字节码解析</h2><p>Class文件是一组以8位字节为基础单位的二进制流，各个数据项目严格的按照顺序紧凑的排列在Class文件中。当遇到占用8字节以上空间的数据项时，则会按照高位在前的方式分割成若干个8位字节进行存储。Class内部不包含任何分隔符，数据存储顺序数量都被严格限定，不允许任何改动。下面看看具体数据项的含义：</p>
+<p><strong>2.1 魔数（Magic Number）</strong></p>
+<p>每个Class文件的头4个字节称为魔数（Magic Number），它唯一作用就是用来确定文件是否能被虚拟机接受。</p>
+<p>很多文件存储标准中都用魔数进行身份标识，如图片gif，jpeg都在文件头部中存储着魔数。使用魔数而不是用扩展名来进行识别主要是基于安全考虑，因为扩展名可以被随意改动。</p>
+<p><strong>2.2 版本号</strong></p>
+<p>接下来的4个字节存储着Class文件的版本号，第五第六个字节为次版本号（Minor Version），第七第八为主版本号（Major Version）。版本号主要用于版本控制，高版本的JDK能向下兼容以前版本的Class文件，但不能运行以后版本的Class文件。</p>
+<p><strong>2.3 常量池入口</strong></p>
+<p>紧接着版本号之后的就是常量池入口，常量池入口后面还必须有一个u2数据项作为常量池容量计数器（因为常量池数量不固定）。</p>
+<p>常量池是一个表类型的数据项，相当于Class文件的资源仓库，与Class文件其他项目关联最多，占用Class空间最大的数据项之一，且是第一个出现的表类型数据项目。</p>
+<p>常量池主要存储两大类常量：字面量（Literal）和符号引用（Symbolic References）</p>
+<p>字面量相当于Java语言中的常量概念，比如字符串，声明为final的常量值。<br>符号引用则属于编译原理方面的概念包括三类常量：</p>
+<ul>
+<li>类和接口的全限定名（Fully Qualified Name）</li>
+<li>字段的名称和描述符（Descriptor）</li>
+<li>方法的名称和描述符</li>
+</ul>
+<p>Class文件不会保存各个方法字段的最终内存布局信息，因为这些字段、方法和符号引用不经过运行期转换（动态连接）的话无法得到真正内存入口地址，也就无法被虚拟机使用。当虚拟机运行时，需要从常量池获得对应的符号引用，再在类创建或运行时解析翻译到具体的内存地址之中。</p>
+<p>常量池中的每一项常量都是一个表（JDK1.7中有14种）。包括UTF-8编码的字符串表，整型字面量表，浮点型字面量表，长整型字面常量表，类和接口的符号引用表，字段符号引用表，类中的方法符号引用表，接口中方法符号引用表等等。这些表都会有各自不同的结构。</p>
+<p><strong>2.4 访问标志</strong></p>
+<p>常量池之后就是由两个字节代表的访问标识（access flags）这些标识用于识别一些类或者接口层次的访问信息，包括这个Class是类还是接口；是否定义为public；是否定义为abstract类型；是否被final修饰。</p>
+<p><strong>2.5 类索引、父类索引、接口索引</strong></p>
+<p>访问标志位之后就是u2类型的类索引，父类索引和接口索引集合。Class文件由这三项数据确定这个类的继承关系。这三项数据（u2类型的索引值）各指向类型为CONSTANT_Class_info的类描述符常量。</p>
+<p><strong>2.6 字段表集合</strong></p>
+<p>字段表用于描述接口或者类中声明的变量。字段（field）包括类级变量以及实例级变量，但不包括在方法内部声明的局部变量。字段表中字段的各种描述信息（作用域比如public，private，是否被final，static修饰，是否可序列化等）均使用标志位表示，名称则引用常量池中的常量来描述。</p>
+<p><strong>2.7 方法表集合</strong></p>
+<p>在方法表中，方法的描述和字段的描述基本一致，依次包括访问标志（access_flags）、名称索引（name_index）、描述符索引（descriptor_index）、属性表集合（attributes）几项。</p>
+<p>方法中的代码经过编译器编译成字节码指令后存放在方法属性表集合中一个名为“Code”的属性里面。</p>
+<p>如果父类方法在子类中没有被重写，方法表集合中就不会出现来自父类的方法信息。</p>
+<p><strong>2.8 属性表集合</strong></p>
+<p>Class文件、字段表、方法表都可以携带自己的属性表集合，以用于描述某些场景专有的信息。</p>
+<p>为了能正确解析Class文件，在Java SE 7中预定义了21项属性，虚拟机在运行时会忽略他不认识的属性。</p>
+<h2 id="3_u3001_u5B57_u8282_u7801_u6307_u4EE4"><a href="#3_u3001_u5B57_u8282_u7801_u6307_u4EE4" class="headerlink" title="3、字节码指令"></a>3、字节码指令</h2><p>Java虚拟机的指令是由一个字节长度的、代表着某种特定操作含义的数字（操作码，Opcode）以及跟随其后的零个至多个代表此操作所需要的参数（操作数，Operands）构成。</p>
+<p>常用指令：</p>
+<ul>
+<li>加载存储指令，将数据在栈帧中的局部变量表和操作数栈之间来回传输</li>
+<li>运算指令，对两个操作数栈上的值进行某种特定运算，并把结果重新写入操作栈，包括加减乘除逻辑与或非</li>
+<li>类型转换指令，将两种不同的数值类型进行相互转换，这些转换一般用于实现用户代码中的显式类型转换操作，或者用来处理字节码指令集中数据类型相关指令代码无法与数据类型一一对应的问题。另，类型转换指令永远不可能导致虚拟机运行异常。</li>
+<li>对象创建与访问指令，创建对象数组访问对象等</li>
+<li>操作数栈管理指令，Java虚拟机提供了一些用于直接操作操作数栈的指令，包括入栈，出栈，栈顶端两个数据交换</li>
+<li>控制转移指令，可以让Java虚拟机有条件或无条件地从指定的位置指令而不是控制转移指令的下一条指令继续执行程序，包括条件分支ifxxx，复合条件分支，无条件分支goto等。</li>
+<li>方法调用和返回指令，调用对象实例方法，调用接口方法，调用类方法，运行时动态解析出调用点限定符所引用的方法，返回指令根据返回值类型区分</li>
+<li>异常处理指令，Java程序中显式抛出异常的操作（throw）都是由athrow指令实现，异常处理不是字节码指令实现，而是采用异常表实现</li>
+<li>同步指令，方法级同步和方法内部一段指令序列的同步（通过管程Monitor支持），执行线程要求先持有管程，然后才能执行方法，当方法执行完成后释放管程；方法执行期间，执行线程持有管程，任何一个线程都无法再获取同一个管程</li>
+</ul>
+
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Class/">Class</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java/">Java</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/虚拟机/">虚拟机</a></li></ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+	<a class="article-category-link" href="/categories/Java虚拟机/">Java虚拟机</a>
+	</div>
+
+
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+
+
+  
+    <article id="post-Java对象创建与内存分布" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2016/07/10/Java对象创建与内存分布/" class="article-date">
+  	<time datetime="2016-07-10T06:04:25.000Z" itemprop="datePublished">2016-07-10</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/07/10/Java对象创建与内存分布/">Java对象创建与内存分布</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>本文主要讲述Java对象在虚拟机中创建，分配内存，初始化的过程，以及分配内存，引用对象的几种常见方式。</p>
+<h2 id="u5BF9_u8C61_u521B_u5EFA"><a href="#u5BF9_u8C61_u521B_u5EFA" class="headerlink" title="对象创建"></a>对象创建</h2><p>对象创建分为三部分，首先是类加载，接着是为对象分配内存，最后是初始化。</p>
+<p><strong>创建</strong><br>虚拟机遇到new指令时会去检查这个指令参数是否能在常量池中定位到一个符号引用，并检查这个符号引用代表的类是否已被加载、解析和初始化过，如果没有则先进性类加载过程。</p>
+<p><strong>分配内存</strong><br>对象所需内存大小在类加载完成后即可确定，所以虚拟机只要从堆中划分出相应大小内存分配给新创建的对象即可。</p>
+<p>常见的内存分配方式有两种，一种是“指针碰撞”，一种是“空闲列表”。不同的Java虚拟机实现会分别采用这两种内存分配方式。</p>
+<p>“指针碰撞”假设Java堆中的内存是绝对规整的，所有用过的内存都放在一边，空闲的内存放在另一边，中间放一个指针作为分界点指示器。当需要分配内存时只需要把指针向空闲内存方向移动对象大小相等的距离即可。</p>
+<p>如果Java堆中的内存并不规整，那么虚拟机需要维护一个列表用来记录那些内存块可用。当需要分配内存时从列表中找出一个足够大的空间划分给对象实例，这就是“空闲列表”。</p>
+<p><strong>初始化</strong><br>虚拟机在对象内存分配完成后首先会将不包括对象头的内存空间初始化为零值，即为对象的字段分配其数据类型所对应的初始值。这一步保证对象的实例字段在Java代码中可以不赋初始值就可使用。</p>
+<p>接下来虚拟机向对象头空间写入实例所属类，类的元数据信息获取方式，对象的哈希码，对象GC分代年龄等信息。</p>
+<p>然后执行<init>方法按照程序员编写的程序代码将对象进行初始化。（这里就是所谓的对象初始化”两次”的问题）</init></p>
+<p><strong>分配内存的线程安全问题</strong><br>对象创建在虚拟机中是非常频繁的过程，并发的情况下并不是线程安全的。解决问题有两种方案，一种是在分配内存时进行同步处理；另一种是为每一个线程在Java堆中预先分配一块内存（即本地线程分配缓冲TLAB），这样线程内存分配的动作分别在不同的内存空间中进行，只有缓冲区内存不足时才会为缓冲区同步分配内存。虚拟机分配内存时还会加上失败重试的方式。</p>
+<h2 id="u5BF9_u8C61_u5185_u5B58_u5206_u5E03"><a href="#u5BF9_u8C61_u5185_u5B58_u5206_u5E03" class="headerlink" title="对象内存分布"></a>对象内存分布</h2><p>对象在内存中的分配包括三部分：对象头，实例数据和对齐填充。</p>
+<p><strong>对象头</strong><br>对象头包括两部分信息，第一部分是用于存储对象自身的运行时数据，如哈希码，GC分代年龄、锁状态标识、线程持有的锁，偏向线程ID、偏向时间戳等，这部分数据的长度在32为虚拟机中为32bit在64为虚拟机中为64bit，所有数据均以标志位的形式存储。</p>
+<p>对象头的另一部分是类型指针，即对象指向它的类元数据的指针，虚拟机通过这个指针来确定这个对象是哪个类的实例。但这并不是必须有的，也就是查找对象元数据并不一定需要对象本身。如果对象是数组，那么对象头中还必须记录对象数组长度。</p>
+<p><strong>实例数据</strong><br>示例数据部分存储着对象程序代码中定义的各种类型字段内容，包括从父类继承的和子类总定义的。这部分的存储顺序会受到虚拟机分配策略参数和字段在Java源代码中定义顺序的影响。虚拟机默认将相同长度的字段分配到一起，且父类定义的变量会出现在子类之前。通过配置虚拟机参数也可以使子类较窄的变量插到父类变量空隙中。</p>
+<p><strong>对象填充</strong><br>对象填充仅仅是占位符，并不是必然存在。HotSpot VM的自动内存管理系统要求对象起始地址必须是8字节的整数倍，也就是说对象的大小必须是8字节的整数倍，所以如果对象实例数据部分没有对齐需要对齐填充来补齐（对象头已经对齐）。</p>
+<h2 id="u5BF9_u8C61_u8BBF_u95EE"><a href="#u5BF9_u8C61_u8BBF_u95EE" class="headerlink" title="对象访问"></a>对象访问</h2><p>当创建好对象后，我们需要通过引用reference来访问使用对象，常见的有两种方式，第一种是句柄，第二种是直接指针。</p>
+<p><strong>句柄</strong><br>Java堆中需要专门划分一部分内存作为句柄池，Java栈中的引用存储的是对象的句柄地址，而句柄地址存储了对象实例数据与数据类型各自的具体地址信息。</p>
+<p>使用句柄的好处就是reference中存储的是稳定的句柄地址，在对象被移动（垃圾收集时移动对象是普遍的行为）时只会改变句柄中实例数据指针，而reference不需要更改。</p>
+<p><strong>直接指针</strong><br>直接指针就是Java栈中的引用直接存储对象的内存地址。使用直接指针最大的好处就是访问速度快，它节省了一次指针定位的时间开销。Sun的Hot Spot虚拟机使用的直接指针访问对象。</p>
+
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java/">Java</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/内存/">内存</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/对象/">对象</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/虚拟机/">虚拟机</a></li></ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+	<a class="article-category-link" href="/categories/Java虚拟机/">Java虚拟机</a>
+	</div>
+
+
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+
+
+  
+    <article id="post-Git版本管理策略" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2016/07/03/Git版本管理策略/" class="article-date">
+  	<time datetime="2016-07-03T06:23:10.000Z" itemprop="datePublished">2016-07-03</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/07/03/Git版本管理策略/">Git版本管理策略</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>本文主要介绍使用Git这种有主干分支概念的工具开发项目时，进行版本管理的方法。每种方法都对应一些特定情况，使用时可以按需选取。</p>
+<h3 id="u4E3B_u5E72_u5F00_u53D1_u4E3B_u5E72_u53D1_u5E03"><a href="#u4E3B_u5E72_u5F00_u53D1_u4E3B_u5E72_u53D1_u5E03" class="headerlink" title="主干开发主干发布"></a>主干开发主干发布</h3><p>在一个开发周期迭代时所有开发测试都在主干分支上进行，待开发完成在主干上打tag发布。</p>
+<h3 id="u4E3B_u5E72_u5F00_u53D1_u5206_u652F_u53D1_u5E03"><a href="#u4E3B_u5E72_u5F00_u53D1_u5206_u652F_u53D1_u5E03" class="headerlink" title="主干开发分支发布"></a>主干开发分支发布</h3><p>在主干上进行开发任务，发布时从主干上拉一个分支并进行测试与bug修复工作，待测试修复完成后在分支上发布，并将发布代码合并到主干上。</p>
+<h3 id="u5206_u652F_u5F00_u53D1_u5206_u652F_u53D1_u5E03"><a href="#u5206_u652F_u5F00_u53D1_u5206_u652F_u53D1_u5E03" class="headerlink" title="分支开发分支发布"></a>分支开发分支发布</h3><p>每次开发周期迭代时都重新拉一个开发分支，在这个周期内所有开发任务都在这个分支上进行。待开发测试完成再将这个分支合并到主干分支上。</p>
+<h3 id="u9879_u76EE_u5EF6_u671F"><a href="#u9879_u76EE_u5EF6_u671F" class="headerlink" title="项目延期"></a>项目延期</h3><p>由于种种原因没能完成开发任务，这时候需要在主干上单独拉一个分支进行延期项目开发，已完成的任务按原计划发布。在新分支上完成开发测试后再合并到主干分支上。</p>
+<h3 id="Bug"><a href="#Bug" class="headerlink" title="Bug"></a>Bug</h3><p>发现重大Bug需要专门拉取一个分支进行修复，并在修复完成后合并到主干分支上。</p>
+<p>对于客户端，可能需要修复某一个版本的bug，在此版本tag上拉取分支，修复完成后在此分支上发布。</p>
+<h3 id="u5B9A_u5236_u4EFB_u52A1"><a href="#u5B9A_u5236_u4EFB_u52A1" class="headerlink" title="定制任务"></a>定制任务</h3><p>对于客户端，可能需要为一些渠道定制开发，所以在主干分支上专门拉取一个分支进行开发，并在开发完成后发布。此次定制功能并不是主干代码需要的功能，不必合到主干分支上。</p>
+<h3 id="u4E3E_u4F8B"><a href="#u4E3E_u4F8B" class="headerlink" title="举例"></a>举例</h3><p>在实际开发工作中，项目发布可能会在master分支上进行，而开发则会在develop分支上进行。</p>
+<p>大家都在develop分支上开发，但总有一些情况导致某一两个项目无法在发布之前完成，然而所有代码无论开发完成的还是未开发完成的都在develop分支上。</p>
+<p>这时候可以在develop分支上再开一个分支，develop上进行一些处理并进行一系列测试与bug修复工作，待测试完成将develop合并到master上发布。而新分支则继续进行延期项目开发，待开发完成合并到develop上，在下一个版本时发布。</p>
+
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Git/">Git</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/版本管理/">版本管理</a></li></ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+	<a class="article-category-link" href="/categories/Git/">Git</a>
+	</div>
+
+
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+
+
   
     <article id="post-React-Native语法指南" class="article article-type-post" itemscope itemprop="blogPost">
   
@@ -656,216 +1198,10 @@
 
 
   
-    <article id="post-科学上网" class="article article-type-post" itemscope itemprop="blogPost">
   
-    <div class="article-meta">
-      <a href="/2016/01/16/科学上网/" class="article-date">
-  	<time datetime="2016-01-16T10:32:43.000Z" itemprop="datePublished">2016-01-16</time>
-</a>
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/01/16/科学上网/">科学上网的正确姿势</a>
-    </h1>
-  
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>最近各家VPN代理都无法登陆，无奈需要查阅一些资料，所以决定自已动手搭建一台VPN服务器。对比了网上搭建VPN的几种方式，决定使用Ubuntu+Shadowsocks搭建VPN服务器。</p>
-<p>不同于传统VPN，Shadowsocks(中文名影梭)工作在应用层，使用自行设计的协议进行加密通信。除创建TCP连接外无需握手，每次请求只转发一个连接，因此使用起来网速较快，在移动设备上也比较省电。影梭的设计目的就是协助用户在严苛的网络环境中突破封锁，所以不容易被墙。而且SS服务器搭建极其简便，客户端软件在MAC，window，Linux，IOS，android上都有支持。</p>
-<h2 id="u8D2D_u4E70_u56FD_u5916_u4E91_u4E3B_u673A"><a href="#u8D2D_u4E70_u56FD_u5916_u4E91_u4E3B_u673A" class="headerlink" title="购买国外云主机"></a>购买国外云主机</h2><p>这里选择购买阿里云主机，在阿里云官网上购买一台位于国外的ECS服务器，系统选择Ubuntu。并设置密码。</p>
-<h2 id="u642D_u5EFAVPN_u670D_u52A1_u5668"><a href="#u642D_u5EFAVPN_u670D_u52A1_u5668" class="headerlink" title="搭建VPN服务器"></a>搭建VPN服务器</h2><p><strong>1. 连接</strong><br>打开命令行工具，输入以下命令连接远端服务器<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ ssh root@你的ip地址</span><br></pre></td></tr></table></figure></p>
-<p>windows用户下载secure shell client，选择quick connect直接输入ip地址，密码连接。</p>
-<p><strong>2. 安装</strong><br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ apt-get update</span><br><span class="line">$ apt-get install python-pip</span><br><span class="line">$ pip install shadowsocks</span><br></pre></td></tr></table></figure></p>
-<p><strong>3. 配置</strong><br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ vim /etc/shadowsocks.json</span><br></pre></td></tr></table></figure></p>
-<p>创建配置文件，将如下配置输入到shadowsocks.json中：</p>
-<blockquote>
-<p>{<br>“server”:”你服务器的ip地址”,<br>“server_port”:8388,<br>“local_address”:”127.0.0.1”,<br>“local_port”:1080,<br>“password”:”你要设置的登录密码”,<br>“timeout”:600,<br>“method”:”aes-256-cfb”,<br>“fast_open”:false<br>}</p>
-</blockquote>
-<p>method代表加密方式，推荐使用 AES-256-CFB 或 RC4-MD5<br>为了支持这些加密方式，我们需要安装：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ apt-get install python-m2crypto</span><br></pre></td></tr></table></figure></p>
-<p><strong>4. 启动</strong><br>推荐使用后台启动，这样我们的客户端可以随时连接到服务器上<br>后台启动<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ ssserver -c /etc/shadowsocks.json <span class="operator">-d</span> start</span><br></pre></td></tr></table></figure></p>
-<p>后台关闭<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ ssserver -c /etc/shadowsocks.json <span class="operator">-d</span> stop</span><br></pre></td></tr></table></figure></p>
-<p><strong>5. 客户端</strong><br>下载<a href="https://github.com/shadowsocks/shadowsocks-iOS/releases" target="_blank" rel="external">Mac</a>，<a href="https://cloud.cokebar.info/index.php/s/rKTIRmkNXn1VUZ4" target="_blank" rel="external">Windows</a>，<a href="https://github.com/shadowsocks/shadowsocks-gui" target="_blank" rel="external">Linux</a>，<a href="http://www.iyingsuo.com/android-shadowsocks-tutorials.html" target="_blank" rel="external">Android</a>，IOS</p>
-<p><strong>6. 客户端配置</strong><br><img src="http://7xvipn.com1.z0.glb.clouddn.com/1338260-c72f7cc452701b1e.png?imageView2/2/w/550" alt="客户端配置"><br>只需要填写你服务器的ip地址以及密码，选择加密方式就可以科学上网了。</p>
-<hr>
-<p>参考资料<br><a href="https://github.com/ziggear/shadowsocks" target="_blank" rel="external">https://github.com/ziggear/shadowsocks</a><br><a href="https://zh.wikipedia.org/wiki/Shadowsocks" target="_blank" rel="external">https://zh.wikipedia.org/wiki/Shadowsocks</a></p>
-
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/VPN/">VPN</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/代理/">代理</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/科学上网/">科学上网</a></li></ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-	<a class="article-category-link" href="/categories/教程/">教程</a>
-	</div>
-
-
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-
-
-  
-    <article id="post-hello-world" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/2016/01/12/hello-world/" class="article-date">
-  	<time datetime="2016-01-12T11:00:00.000Z" itemprop="datePublished">2016-01-12</time>
-</a>
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/01/12/hello-world/">Hexo 常用命令</a>
-    </h1>
-  
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Welcome to <a href="http://hexo.io/" target="_blank" rel="external">Hexo</a>! This is your very first post. Check <a href="http://hexo.io/docs/" target="_blank" rel="external">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="http://hexo.io/docs/troubleshooting.html" target="_blank" rel="external">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="external">GitHub</a>.</p>
-<h2 id="Quick_Start"><a href="#Quick_Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create_a_new_post"><a href="#Create_a_new_post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
-<p>More info: <a href="http://hexo.io/docs/writing.html" target="_blank" rel="external">Writing</a></p>
-<h3 id="Run_server"><a href="#Run_server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="http://hexo.io/docs/server.html" target="_blank" rel="external">Server</a></p>
-<h3 id="Generate_static_files"><a href="#Generate_static_files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="http://hexo.io/docs/generating.html" target="_blank" rel="external">Generating</a></p>
-<h3 id="Deploy_to_remote_sites"><a href="#Deploy_to_remote_sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="http://hexo.io/docs/deployment.html" target="_blank" rel="external">Deployment</a></p>
-
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/hexo/">hexo</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/教程/">教程</a></li></ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-	<a class="article-category-link" href="/categories/教程/">教程</a>
-	</div>
-
-
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-
-
-  
-    <article id="post-YouAreMySunshine" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/2015/12/31/YouAreMySunshine/" class="article-date">
-  	<time datetime="2015-12-30T16:00:00.000Z" itemprop="datePublished">2015-12-31</time>
-</a>
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2015/12/31/YouAreMySunshine/">你是我的阳光</a>
-    </h1>
-  
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>You are my sunshine, my only sunshine<br>You make me happy, when sky is gray<br>You’ll never know dear, how much I love you<br>Please don’t take my sunshine away<br>The other night dear as I laid sleeping<br>I dreamed I held you in my arms<br>when I awoke dear I was mistaken<br>well, I held my head and cried</p>
-<p>你是我阳光生命的阳光<br>你使我快乐当我忧伤<br>你永不知道我多么爱你<br>我俩永远不要分</p>
-<p>You are my sunshine, my only sunshine<br>You make me happy, when sky is gray<br>You’ll never know dear, how much I love you<br>Please don’t take my sunshine away<br>Please don’t take my sunshine away<br>Please don’t take my sunshine away<br>Please don’t take my sunshine away</p>
-
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/歌词/">歌词</a></li></ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-	<a class="article-category-link" href="/categories/随笔/">随笔</a>
-	</div>
-
-
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-
-
-  
+    <nav id="page-nav">
+      <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
+    </nav>
   
 </div>
       <footer id="footer">
