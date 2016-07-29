@@ -116,7 +116,7 @@
 				
 				<section class="switch-part switch-part2">
 					<div class="widget tagcloud" id="js-tagcloud">
-						<a href="/tags/Android/" style="font-size: 16.67px;">Android</a> <a href="/tags/AsyncStorage/" style="font-size: 10px;">AsyncStorage</a> <a href="/tags/Class/" style="font-size: 10px;">Class</a> <a href="/tags/GC算法/" style="font-size: 10px;">GC算法</a> <a href="/tags/Git/" style="font-size: 13.33px;">Git</a> <a href="/tags/IPC/" style="font-size: 10px;">IPC</a> <a href="/tags/Java/" style="font-size: 20px;">Java</a> <a href="/tags/React-Native/" style="font-size: 13.33px;">React Native</a> <a href="/tags/SSH/" style="font-size: 10px;">SSH</a> <a href="/tags/VPN/" style="font-size: 10px;">VPN</a> <a href="/tags/hexo/" style="font-size: 10px;">hexo</a> <a href="/tags/代理/" style="font-size: 10px;">代理</a> <a href="/tags/内存/" style="font-size: 13.33px;">内存</a> <a href="/tags/内存回收/" style="font-size: 10px;">内存回收</a> <a href="/tags/内存管理/" style="font-size: 10px;">内存管理</a> <a href="/tags/对象/" style="font-size: 10px;">对象</a> <a href="/tags/异常/" style="font-size: 10px;">异常</a> <a href="/tags/教程/" style="font-size: 13.33px;">教程</a> <a href="/tags/歌词/" style="font-size: 10px;">歌词</a> <a href="/tags/版本管理/" style="font-size: 10px;">版本管理</a> <a href="/tags/科学上网/" style="font-size: 10px;">科学上网</a> <a href="/tags/类加载/" style="font-size: 10px;">类加载</a> <a href="/tags/虚拟机/" style="font-size: 20px;">虚拟机</a> <a href="/tags/资源加载/" style="font-size: 10px;">资源加载</a> <a href="/tags/进程间通信/" style="font-size: 10px;">进程间通信</a>
+						<a href="/tags/Android/" style="font-size: 16.67px;">Android</a> <a href="/tags/AsyncStorage/" style="font-size: 10px;">AsyncStorage</a> <a href="/tags/Banner/" style="font-size: 10px;">Banner</a> <a href="/tags/Class/" style="font-size: 10px;">Class</a> <a href="/tags/GC算法/" style="font-size: 10px;">GC算法</a> <a href="/tags/Git/" style="font-size: 13.33px;">Git</a> <a href="/tags/IPC/" style="font-size: 10px;">IPC</a> <a href="/tags/Java/" style="font-size: 20px;">Java</a> <a href="/tags/React-Native/" style="font-size: 16.67px;">React Native</a> <a href="/tags/SSH/" style="font-size: 10px;">SSH</a> <a href="/tags/VPN/" style="font-size: 10px;">VPN</a> <a href="/tags/hexo/" style="font-size: 10px;">hexo</a> <a href="/tags/代理/" style="font-size: 10px;">代理</a> <a href="/tags/内存/" style="font-size: 13.33px;">内存</a> <a href="/tags/内存回收/" style="font-size: 10px;">内存回收</a> <a href="/tags/内存管理/" style="font-size: 10px;">内存管理</a> <a href="/tags/对象/" style="font-size: 10px;">对象</a> <a href="/tags/异常/" style="font-size: 10px;">异常</a> <a href="/tags/教程/" style="font-size: 13.33px;">教程</a> <a href="/tags/歌词/" style="font-size: 10px;">歌词</a> <a href="/tags/版本管理/" style="font-size: 10px;">版本管理</a> <a href="/tags/科学上网/" style="font-size: 10px;">科学上网</a> <a href="/tags/类加载/" style="font-size: 10px;">类加载</a> <a href="/tags/虚拟机/" style="font-size: 20px;">虚拟机</a> <a href="/tags/资源加载/" style="font-size: 10px;">资源加载</a> <a href="/tags/轮播图/" style="font-size: 10px;">轮播图</a> <a href="/tags/进程间通信/" style="font-size: 10px;">进程间通信</a>
 					</div>
 				</section>
 				
@@ -193,6 +193,141 @@
 </nav>
 
       <div class="body-wrap">
+  
+    <article id="post-Android-内存管理" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2016/06/02/Android-内存管理/" class="article-date">
+  	<time datetime="2016-06-02T06:45:24.000Z" itemprop="datePublished">2016-06-02</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/06/02/Android-内存管理/">Android 内存管理</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Android是一个基于Linux实现的操作系统。但对于Linux内核来说，Android也仅仅只是一个运行在内核之上的应用程序，与其他运行在内核之上的应用程序没有任何区别。所以Android需要一套机制管理运行在Linux进程中的APK应用程序。Android内存管理包含两部分，一部分是Framework对内存的管理，一部分是Linux内核对内存管理，这两部分共同决定应用程序的生命周期。本文主要阐述Android内存管理机制的实现原理，以及在应用开发中需要注意的一些事项，最后本文总结了如何实现杀不死进程的一种方法。</p>
+<h2 id="Linux__u8FDB_u7A0B_u56DE_u6536"><a href="#Linux__u8FDB_u7A0B_u56DE_u6536" class="headerlink" title="Linux 进程回收"></a>Linux 进程回收</h2><p>在Android中，大部分应用程序都运行在一个独立的Linux进程中，每个进程都有独立的内存空间。随着各种应用程序启动，系统内存不断下降，为了保证新应用能够运行，Android需要一套机制杀死暂时闲置的进程。</p>
+<p>Android Framework并不能直接回收内存，其管理进程的服务（ActivityManagerService，以下简称AmS）也同应用程序一样运行在Java虚拟机环境里。Java虚拟机都运行在各自独立的内存空间，所以ActivityManagerService没有办法感知应用程序是否OOM。</p>
+<p>Android系统中还运行了一个OOM进程。该进程启动时首先会在Linux内核中把自己注册为一个OOM Killer。AmS需要把每一个应用程序的oom_adj值告知OOM Killer，这个值的范围在-16到15之间，值越低，说明越重要，这个值类似于Linux中的nice值，只在标准的Linux中，有其自己的OOM Killer。Android中的OOM Killer进程仅仅适用于Android应用程序。</p>
+<p>当内核的内存管理模块检测到系统内存不足时就会通知OOM Killer，然后OOM Killer根据AmS所告知的优先级强制退出优先级低的应用程序。</p>
+<h2 id="u5E94_u7528_u7A0B_u5E8F_u5728_u5185_u5B58_u4E2D_u7684_u72B6_u6001"><a href="#u5E94_u7528_u7A0B_u5E8F_u5728_u5185_u5B58_u4E2D_u7684_u72B6_u6001" class="headerlink" title="应用程序在内存中的状态"></a>应用程序在内存中的状态</h2><p>Android官方声称，Activity退出后，其所在进程并不会被立即杀死，从而在下次启动Activity时，能够提高启动速度。这些Activity只有在内存紧张时才会被系统杀死。所以对于应用程序来说，关闭并不意味着释放内存。</p>
+<p><strong>Activity在内存中的状态</strong><br>系统只有一个Activity处于与用户交互的状态，对于非交互状态的Activity，AmS会在内部暂时缓存起来而不是立即杀死，但如果后台Activity数目超过一定阈值，AmS则会强制杀死一些优先级低的Activity。以下是Activity在内存或者说在AmS中的状态：</p>
+<ul>
+<li>AmS会记录最近启动的20个Activity，如果超过20则舍弃最早记录的Activity。</li>
+<li>AmS会将所有正在运行的Activity保存在一个列表中，对于使用back返回的Activity则从列表中清除。</li>
+<li>AmS使用Lru算法保存所有最近使用过的Activity。</li>
+<li>AmS使用一个列表（mStoppingActivities）保存需要停止的Activity，这种情况<br>发生在启动一个Activity时，AmS遵循先启动后停止的策略，将需要停止的Activity保存在此列表中，等AmS闲置下来后再停止Activity。</li>
+<li>AmS使用一个列表保存处于finish状态(onDestory())的Activity，当一个Activity处于finish状态时（onDestory()执行后）不会被立即杀死，而是保存到该列表中直到超过系统设定的警戒线才会回收该列表中的Activity。</li>
+</ul>
+<p><strong>应用进程在内存中的状态</strong><br>每个应用程序都对应着一个ActivityThread类，该类初始化后就进入Looper.loop()函数中无限循环。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Looper.prepareMainLooper();</span><br><span class="line">...</span><br><span class="line">ActivityThread thread = <span class="keyword">new</span> ActivityThread();</span><br><span class="line">thread.attach(<span class="keyword">false</span>);</span><br><span class="line">...</span><br><span class="line">Looper.loop();</span><br></pre></td></tr></table></figure></p>
+<p>以后则依靠消息机制运行，既当有消息时处理消息，没有消息则应用进程进入sleep状态。loop()方法内部代码如下所示：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="title">loop</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  Looper me = myLooper();</span><br><span class="line">  MessageQueue queue = me.mQueue;</span><br><span class="line">  <span class="keyword">while</span>(<span class="keyword">true</span>)&#123;</span><br><span class="line">    Message msg = queue.next();<span class="comment">// might block</span></span><br><span class="line">    ...</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>在Linux内核调度中，如果一个线程的状态为sleep，则除了占用调度本身的时间，不会占用CPU时间片。</p>
+<p>有三种情况会唤醒应用线程，一种是定时器中断（比如我们设置的闹钟，在程序中可以设置定时任务），第二种是用户按键消息，第三种是Binder消息（Binder用于进程间通信，其在应用程序中会自动创建一个线程，Binder在接收到消息后会想UI主线程发送一个消息从而使queue.next()继续执行）这就是所谓的消息驱动模式。</p>
+<p>所以设计良好的应用程序当处于后台时不会占用任何CPU时间，更不会拖慢系统运行速度。其所占用的仅仅是内存，即使释放所占用的内存也不会提高系统运行速度。当然这里说的是设计良好的应用程序，目前国内很多应用在处于后台状态时依然会偷偷干很多事情，这无疑就拖慢了系统运行速度。</p>
+<h2 id="Android__u5185_u5B58_u56DE_u6536"><a href="#Android__u5185_u5B58_u56DE_u6536" class="headerlink" title="Android 内存回收"></a>Android 内存回收</h2><p>Activity所占内存在一般情况下不会被回收，只有在系统内存不够用时才会回收，并且回收会遵循一定规则。大致可以概括为前台Activity最后回收，其次是包含前台的Service或者Provider，再其次是后台Activity，最后是空进程。</p>
+<p><strong>内存释放的三个地方</strong></p>
+<ul>
+<li>第一个是在ActivityManagerService中运行，即Android所声称的当系统内存低时，优先释放没有任何Activity的进程，然后释放非前台Activity对应的进程。</li>
+<li>第二个是在OOM Killer中，此时AmS只要告诉OOM各个应用的优先级，然后OOM就会调用Linux内部的进程管理方法杀死优先级较低的进程。</li>
+<li>第三个是在应用进程本身之中，当AmS认为目标进程需要被杀死时，首先会通知目标进程进程内存释放。这包括调用目标进程的scheduleLowMemory()方法和processInBackground()方法。</li>
+</ul>
+<p><strong>关闭Activity的三种情况</strong></p>
+<ul>
+<li>第一种，从调用startActivity()开始，一般情况下，当前都有正在运行的Activity，所以需要先暂停当前的Activity，而暂停完毕后，AmS会收到一个Binder消息，并开始从completePaused()处执行。在该函数中，由于上一个Activity并没有finishing，仅仅是stop，所以这里会把上一个Activity添加到mStoppingActivity列表中。当目标Activity启动后，会向Ams发送一个请求进行内存回收的消息，这会导致AmS在内部调用activityIdleInternal()方法，该方法中首先会处理mStoppingActivities列表中的Activity，这就会调用stopActivityLocked()方法。这又会通过IPC调用，通知应用进程stop指定的Activity，当stop完毕后，再报告给AmS，于是AmS再从activityStopped()出开始执行，而这会调用trimApplication()方法，该方法会执行内存相关的操作。</li>
+<li>第二种，当按Back键后，会调用finishActivityLocked()，然后把该Activity的finishing标识设为true，然后再调用startPausingLocked()，当目标Activity完成暂停后，就会报告AmS，此时AmS又会从completePaused()处开始执行。与第一种情况不同，由于此时暂停的Activity的finishing状态已经设置为true，所以会执行finishingActivityLocked()，而不是像第一种情况中仅仅把该Activity添加到mStoppingActivities列表。</li>
+<li>第三种，当Activity启动后，会向AmS发送一个Idle消息，这会导致AmS开始执行activityIdleInternal()方法。该方法会首先处理mStoppingActivities列表中的对象，接着处理mFinishingActivities列表，最后再调用trimApplication()方法。</li>
+</ul>
+<p>以上就是关闭Activity的三种情况，包括stop和destory，客户进程中与之对应的就是onStop()和onDestory()的调用。</p>
+<p>如果使用OOM还有AmS机制杀死后台进程后，此时运行的Activity数量依然超过MAX_ACTIVITIES(20)，则需要继续销毁满足以下三个条件的Activity：</p>
+<ol>
+<li>Activity必须已经stop，但却没有finishing</li>
+<li>必须是不可见的，既该Activity窗口上面有其他全屏的窗口，如果不是全屏，则后面的Activity是可见的。</li>
+<li>不能是persistent类型，既常驻进程不能被杀死。</li>
+</ol>
+<h2 id="u8FDB_u7A0B_u4F18_u5148_u7EA7"><a href="#u8FDB_u7A0B_u4F18_u5148_u7EA7" class="headerlink" title="进程优先级"></a>进程优先级</h2><p>Android系统试图尽可能长时间地保持应用程序进程，但为了新建或者运行更加重要的进程，总是需要清除过时进程来回收内存。为了决定保留或终止哪个进程，根据进程内运行的组件及这些组件的状态，系统把每个进程都划入一个“重要性层次结构”中。重要性最低的进程首先会被清除，然后是下一个最低的，依此类推。</p>
+<p>重要性层次结构共有5级，以下列表按照重要程度列出了各类进程（第一类进程是<em>最重要</em>的，将最后一个被终止）：</p>
+<p>1）前台进程</p>
+<p>用户当前操作所必须的进程。满足以下任一条件时，进程被视作处于前台：<br>其中运行着正与用户交互的Activity（Activity对象的onResume()方法已被调用）。<br>其中运行着与用户交互的activity绑定的Service。<br>其中运行着前台Service，既该Service以startForeground()方式被调用。<br>其中运行着正在执行生命周期回调方法（onCreate()、onStart()或onDestory()）的Service。<br>其中运行着正在执行onReceive()方法的BroadcastReceiver。</p>
+<p>一般而言，任何时刻前台进程的数量都为数不多，只有当内存不足以维持它们同时运行时才会被终止。通常，设备这时候已经到了使用虚拟内存的地步，终止一些前台进程是为了保证用户界面的及时响应。</p>
+<p>2） 可见进程</p>
+<p>没有前台组件、但仍会影响用户在屏幕上所见内容的进程。满足以下任一条件时，进程被认为是可见的：<br>其中运行着非前台Activity，但用户仍然可见到此activity（onPause()方法被调用）。例如，打开了一个对话框，而activity还允许显示在对话框后面，对用户依然可见。<br>其中运行着被可见（或前台）activity绑定的Service。</p>
+<p>可见进程被认为是非常重要的进程，除非无法维持所有前台进程同时运行了，否则它们是不会被终止的。</p>
+<p>3） 服务进程</p>
+<p>此进程运行着由startService()方法启动的服务，它不会升级为前台进程或可见进程。尽管服务进程不直接和用户所见内容关联，但他们通常在执行一些用户关心的操作（比如在后台播放音乐或从网络下载数据）。因此，除非内存不足以维持所有前台、可见进程同时运行，系统会保持服务进程的运行。</p>
+<p>4） 后台进程</p>
+<p>包含用户不可见activity（Activity对象的onStop()方法已被调用）的进程。这些进程对用户体验没有直接的影响，系统可能在任意时间终止它们，以回收内存供前台进程、可见进程及服务进程使用。</p>
+<p>通常系统会有很多后台进程在运行，所以它们被保存在一个LRU（最近最少使用）列表中，以确保最近被用户使用的activity最后一个被终止。如果一个activity正确实现了生命周期方法，并保存了当前的状态，则终止此类进程不会对用户体验产生可见的影响。因为在用户返回时，activity会恢复所有可见的状态。关于保存和恢复状态的详细信息，请参阅Activity文档。</p>
+<p>5） 空进程</p>
+<p>不含任何活动应用程序组件的进程。保留这种进程的唯一目的就是用作缓存，以改善下次在此进程中运行组件的启动时间。为了在进程缓存和内核缓存间平衡系统整体资源，系统经常会终止这种进程。</p>
+<p>依据进程中目前活跃组件的重要程度，Android会给进程评估一个尽可能高的级别。例如，如果一个进程中运行着一个服务和一个用户可见的activity，则此进程会被评定为可见进程，而不是服务进程。</p>
+<p>此外，一个进程的级别可能会由于其它进程的依赖而被提高——为其它进程提供服务的进程级别永远不会低于使用此服务的进程。比如：如果A进程中的content provider为进程B中的客户端提供服务，或进程A中的服务被进程B中的组件所调用，则A进程至少被视为与进程B同样重要。</p>
+<p>因为运行服务的进程级别是高于后台activity进程的，所以，如果activity需要启动一个长时间运行的操作，则为其启动一个服务会比简单地创建一个工作线程更好些——尤其是该操作时间比activity的生存期还要长的情况下。比如，一个activity要把图片上传至Web网站，就应该创建一个服务来执行之，即使用户离开了此activity，上传还是会在后台继续运行。不论activity发生什么情况，使用服务可以保证操作至少拥有“服务进程”的优先级。同理，广播接收器broadcast receiver也是使用服务来处理耗时任务的，而不是简单地把它放入线程中。</p>
+<h2 id="u6740_u4E0D_u6B7B_u7684Service"><a href="#u6740_u4E0D_u6B7B_u7684Service" class="headerlink" title="杀不死的Service"></a>杀不死的Service</h2><p>如何让应用在手机中存活更长时间？网上各种方法可谓是千奇百怪，有些简直异想天开。</p>
+<ul>
+<li>系统广播唤醒应用，比如手机开机，网络切换等</li>
+<li>接入第三方SDK唤醒应用，比如接入微信SDK会唤醒微信</li>
+<li>免杀白名单，比如360免杀白名单，MIUI系统免杀白名单</li>
+<li>全家桶，应用之间互相唤醒，比如百度系，阿里系应用</li>
+<li>两个Service互相唤醒（这个就别想了，不靠谱）</li>
+<li>使用Timer定时器（一样不靠谱）</li>
+</ul>
+<p>设计良好的应用不应该在用户不使用的时候依然保持运行。一直在后台运行不光费电费流量，还是造成系统卡顿的主要原因之一（参见上文分析）。正常的做法是优化你的应用程序，减少不合理场景的情况，除一些必要服务应用外，大部分应用不需要一直在后台保存运行状态。</p>
+<p>有正常的做法就有不正常的做法，让应用长时间停留在用户手机中无外乎就是增加所谓的活跃用户数等一些产品指标。这对于很多公司还是很有吸引力的。</p>
+<p>如上文所说，无论应用怎么挣扎，当处于不可见进程的情况下随时都有可能被杀死。所以使用前台进程是最有效的方法。但前台进程必须有一个Notifcation显示在通知栏中，有没有办法让应用以前台进程的方式启动同时又不显示Notifcation？方法当然有，就是利用系统漏洞：</p>
+<ul>
+<li>API&lt;18，启动前台Service时直接传入new Notifcation();</li>
+<li>API&gt;=18，同时启动两个id相同的前台Service，然后再将后启动的Service做stop处理</li>
+</ul>
+<p>目前，QQ，微信，支付宝等知名应用都使用此方案。不过如果应用占用太多内存即使是前台进程也依然会被干掉。</p>
+<p>这些所谓的实现进程杀不死的方案并不都是一劳永逸的方法，以牺牲用户体验为代价很有可能会激怒用户卸载你的应用，所以最好的方式还是遵循Android规范开发性能更优更合理的应用程序。</p>
+
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android/">Android</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/内存管理/">内存管理</a></li></ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+	<a class="article-category-link" href="/categories/Android内核剖析/">Android内核剖析</a>
+	</div>
+
+
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+
+
   
     <article id="post-Android资源加载机制详解" class="article article-type-post" itemscope itemprop="blogPost">
   
