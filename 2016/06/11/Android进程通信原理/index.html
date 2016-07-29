@@ -4,21 +4,21 @@
   <meta charset="utf-8">
   
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
-  <title>Android进程通信原理 | Gooooood</title>
+  <title>Android 进程通信原理 | Gooooood</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="description" content="Android系统提供了一些通用服务，比如音乐打电话发短信，WIFI，定位，输入法，传感器等。应用程序与这些通用服务运行在不同的进程中，如果应用程序想要与这些通用服务交互就要涉及到进程间通信，Binder就是为了Android进程间通信而设计的。
 Binder框架Binder是一种架构，这种架构提供了服务端接口、Binder驱动、客户端接口三个模块。
 服务端Binder服务端相当于一个Binder">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Android进程通信原理">
+<meta property="og:title" content="Android 进程通信原理">
 <meta property="og:url" content="http://zhaoshuo.me/2016/06/11/Android进程通信原理/index.html">
 <meta property="og:site_name" content="Gooooood">
 <meta property="og:description" content="Android系统提供了一些通用服务，比如音乐打电话发短信，WIFI，定位，输入法，传感器等。应用程序与这些通用服务运行在不同的进程中，如果应用程序想要与这些通用服务交互就要涉及到进程间通信，Binder就是为了Android进程间通信而设计的。
 Binder框架Binder是一种架构，这种架构提供了服务端接口、Binder驱动、客户端接口三个模块。
 服务端Binder服务端相当于一个Binder">
-<meta property="og:updated_time" content="2016-06-20T06:54:28.000Z">
+<meta property="og:updated_time" content="2016-07-29T06:46:17.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Android进程通信原理">
+<meta name="twitter:title" content="Android 进程通信原理">
 <meta name="twitter:description" content="Android系统提供了一些通用服务，比如音乐打电话发短信，WIFI，定位，输入法，传感器等。应用程序与这些通用服务运行在不同的进程中，如果应用程序想要与这些通用服务交互就要涉及到进程间通信，Binder就是为了Android进程间通信而设计的。
 Binder框架Binder是一种架构，这种架构提供了服务端接口、Binder驱动、客户端接口三个模块。
 服务端Binder服务端相当于一个Binder">
@@ -123,7 +123,7 @@ Binder框架Binder是一种架构，这种架构提供了服务端接口、Binde
 				
 				<section class="switch-part switch-part2">
 					<div class="widget tagcloud" id="js-tagcloud">
-						<a href="/tags/Android/" style="font-size: 16.67px;">Android</a> <a href="/tags/AsyncStorage/" style="font-size: 10px;">AsyncStorage</a> <a href="/tags/Banner/" style="font-size: 10px;">Banner</a> <a href="/tags/Class/" style="font-size: 10px;">Class</a> <a href="/tags/GC算法/" style="font-size: 10px;">GC算法</a> <a href="/tags/Git/" style="font-size: 13.33px;">Git</a> <a href="/tags/IPC/" style="font-size: 10px;">IPC</a> <a href="/tags/Java/" style="font-size: 20px;">Java</a> <a href="/tags/React-Native/" style="font-size: 16.67px;">React Native</a> <a href="/tags/SSH/" style="font-size: 10px;">SSH</a> <a href="/tags/VPN/" style="font-size: 10px;">VPN</a> <a href="/tags/hexo/" style="font-size: 10px;">hexo</a> <a href="/tags/代理/" style="font-size: 10px;">代理</a> <a href="/tags/内存/" style="font-size: 13.33px;">内存</a> <a href="/tags/内存回收/" style="font-size: 10px;">内存回收</a> <a href="/tags/内存管理/" style="font-size: 10px;">内存管理</a> <a href="/tags/对象/" style="font-size: 10px;">对象</a> <a href="/tags/异常/" style="font-size: 10px;">异常</a> <a href="/tags/教程/" style="font-size: 13.33px;">教程</a> <a href="/tags/歌词/" style="font-size: 10px;">歌词</a> <a href="/tags/版本管理/" style="font-size: 10px;">版本管理</a> <a href="/tags/科学上网/" style="font-size: 10px;">科学上网</a> <a href="/tags/类加载/" style="font-size: 10px;">类加载</a> <a href="/tags/虚拟机/" style="font-size: 20px;">虚拟机</a> <a href="/tags/资源加载/" style="font-size: 10px;">资源加载</a> <a href="/tags/轮播图/" style="font-size: 10px;">轮播图</a> <a href="/tags/进程间通信/" style="font-size: 10px;">进程间通信</a>
+						<a href="/tags/Android/" style="font-size: 17.5px;">Android</a> <a href="/tags/AsyncStorage/" style="font-size: 10px;">AsyncStorage</a> <a href="/tags/Banner/" style="font-size: 10px;">Banner</a> <a href="/tags/Class/" style="font-size: 10px;">Class</a> <a href="/tags/GC算法/" style="font-size: 10px;">GC算法</a> <a href="/tags/Git/" style="font-size: 12.5px;">Git</a> <a href="/tags/IPC/" style="font-size: 10px;">IPC</a> <a href="/tags/Java/" style="font-size: 20px;">Java</a> <a href="/tags/PackageManagerService/" style="font-size: 10px;">PackageManagerService</a> <a href="/tags/Pms/" style="font-size: 10px;">Pms</a> <a href="/tags/React-Native/" style="font-size: 15px;">React Native</a> <a href="/tags/SSH/" style="font-size: 10px;">SSH</a> <a href="/tags/VPN/" style="font-size: 10px;">VPN</a> <a href="/tags/hexo/" style="font-size: 10px;">hexo</a> <a href="/tags/代理/" style="font-size: 10px;">代理</a> <a href="/tags/内存/" style="font-size: 12.5px;">内存</a> <a href="/tags/内存回收/" style="font-size: 10px;">内存回收</a> <a href="/tags/内存管理/" style="font-size: 10px;">内存管理</a> <a href="/tags/包管理服务/" style="font-size: 10px;">包管理服务</a> <a href="/tags/对象/" style="font-size: 10px;">对象</a> <a href="/tags/异常/" style="font-size: 10px;">异常</a> <a href="/tags/教程/" style="font-size: 12.5px;">教程</a> <a href="/tags/歌词/" style="font-size: 10px;">歌词</a> <a href="/tags/版本管理/" style="font-size: 10px;">版本管理</a> <a href="/tags/科学上网/" style="font-size: 10px;">科学上网</a> <a href="/tags/类加载/" style="font-size: 10px;">类加载</a> <a href="/tags/虚拟机/" style="font-size: 20px;">虚拟机</a> <a href="/tags/资源加载/" style="font-size: 10px;">资源加载</a> <a href="/tags/轮播图/" style="font-size: 10px;">轮播图</a> <a href="/tags/进程间通信/" style="font-size: 10px;">进程间通信</a>
 					</div>
 				</section>
 				
@@ -216,7 +216,7 @@ Binder框架Binder是一种架构，这种架构提供了服务端接口、Binde
         
   
     <h1 class="article-title" itemprop="name">
-      Android进程通信原理
+      Android 进程通信原理
     </h1>
   
 
@@ -325,7 +325,7 @@ Binder框架Binder是一种架构，这种架构提供了服务端接口、Binde
 
 <div class="duoshuo">
 	<!-- 多说评论框 start -->
-	<div class="ds-thread" data-thread-key="Android进程通信原理" data-title="Android进程通信原理" data-url="http://zhaoshuo.me/2016/06/11/Android进程通信原理/"></div>
+	<div class="ds-thread" data-thread-key="Android进程通信原理" data-title="Android 进程通信原理" data-url="http://zhaoshuo.me/2016/06/11/Android进程通信原理/"></div>
 	<!-- 多说评论框 end -->
 	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
 	<script type="text/javascript">

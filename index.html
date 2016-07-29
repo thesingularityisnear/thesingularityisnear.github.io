@@ -116,7 +116,7 @@
 				
 				<section class="switch-part switch-part2">
 					<div class="widget tagcloud" id="js-tagcloud">
-						<a href="/tags/Android/" style="font-size: 16.67px;">Android</a> <a href="/tags/AsyncStorage/" style="font-size: 10px;">AsyncStorage</a> <a href="/tags/Banner/" style="font-size: 10px;">Banner</a> <a href="/tags/Class/" style="font-size: 10px;">Class</a> <a href="/tags/GC算法/" style="font-size: 10px;">GC算法</a> <a href="/tags/Git/" style="font-size: 13.33px;">Git</a> <a href="/tags/IPC/" style="font-size: 10px;">IPC</a> <a href="/tags/Java/" style="font-size: 20px;">Java</a> <a href="/tags/React-Native/" style="font-size: 16.67px;">React Native</a> <a href="/tags/SSH/" style="font-size: 10px;">SSH</a> <a href="/tags/VPN/" style="font-size: 10px;">VPN</a> <a href="/tags/hexo/" style="font-size: 10px;">hexo</a> <a href="/tags/代理/" style="font-size: 10px;">代理</a> <a href="/tags/内存/" style="font-size: 13.33px;">内存</a> <a href="/tags/内存回收/" style="font-size: 10px;">内存回收</a> <a href="/tags/内存管理/" style="font-size: 10px;">内存管理</a> <a href="/tags/对象/" style="font-size: 10px;">对象</a> <a href="/tags/异常/" style="font-size: 10px;">异常</a> <a href="/tags/教程/" style="font-size: 13.33px;">教程</a> <a href="/tags/歌词/" style="font-size: 10px;">歌词</a> <a href="/tags/版本管理/" style="font-size: 10px;">版本管理</a> <a href="/tags/科学上网/" style="font-size: 10px;">科学上网</a> <a href="/tags/类加载/" style="font-size: 10px;">类加载</a> <a href="/tags/虚拟机/" style="font-size: 20px;">虚拟机</a> <a href="/tags/资源加载/" style="font-size: 10px;">资源加载</a> <a href="/tags/轮播图/" style="font-size: 10px;">轮播图</a> <a href="/tags/进程间通信/" style="font-size: 10px;">进程间通信</a>
+						<a href="/tags/Android/" style="font-size: 17.5px;">Android</a> <a href="/tags/AsyncStorage/" style="font-size: 10px;">AsyncStorage</a> <a href="/tags/Banner/" style="font-size: 10px;">Banner</a> <a href="/tags/Class/" style="font-size: 10px;">Class</a> <a href="/tags/GC算法/" style="font-size: 10px;">GC算法</a> <a href="/tags/Git/" style="font-size: 12.5px;">Git</a> <a href="/tags/IPC/" style="font-size: 10px;">IPC</a> <a href="/tags/Java/" style="font-size: 20px;">Java</a> <a href="/tags/PackageManagerService/" style="font-size: 10px;">PackageManagerService</a> <a href="/tags/Pms/" style="font-size: 10px;">Pms</a> <a href="/tags/React-Native/" style="font-size: 15px;">React Native</a> <a href="/tags/SSH/" style="font-size: 10px;">SSH</a> <a href="/tags/VPN/" style="font-size: 10px;">VPN</a> <a href="/tags/hexo/" style="font-size: 10px;">hexo</a> <a href="/tags/代理/" style="font-size: 10px;">代理</a> <a href="/tags/内存/" style="font-size: 12.5px;">内存</a> <a href="/tags/内存回收/" style="font-size: 10px;">内存回收</a> <a href="/tags/内存管理/" style="font-size: 10px;">内存管理</a> <a href="/tags/包管理服务/" style="font-size: 10px;">包管理服务</a> <a href="/tags/对象/" style="font-size: 10px;">对象</a> <a href="/tags/异常/" style="font-size: 10px;">异常</a> <a href="/tags/教程/" style="font-size: 12.5px;">教程</a> <a href="/tags/歌词/" style="font-size: 10px;">歌词</a> <a href="/tags/版本管理/" style="font-size: 10px;">版本管理</a> <a href="/tags/科学上网/" style="font-size: 10px;">科学上网</a> <a href="/tags/类加载/" style="font-size: 10px;">类加载</a> <a href="/tags/虚拟机/" style="font-size: 20px;">虚拟机</a> <a href="/tags/资源加载/" style="font-size: 10px;">资源加载</a> <a href="/tags/轮播图/" style="font-size: 10px;">轮播图</a> <a href="/tags/进程间通信/" style="font-size: 10px;">进程间通信</a>
 					</div>
 				</section>
 				
@@ -665,6 +665,191 @@
 
 
   
+    <article id="post-Android包管理服务" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2016/07/04/Android包管理服务/" class="article-date">
+  	<time datetime="2016-07-04T06:47:35.000Z" itemprop="datePublished">2016-07-04</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/07/04/Android包管理服务/">Android包管理服务</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>PackageManagerService（PmS）包管理服务运行在SystemServer进程中，是一个安卓系统服务，主要用于实现应用安装卸载，组件查询匹配，权限管理等功能。</p>
+<h2 id="u4E3B_u8981_u529F_u80FD"><a href="#u4E3B_u8981_u529F_u80FD" class="headerlink" title="主要功能"></a>主要功能</h2><ul>
+<li><p>根据Intent匹配到具体的Activity，Provider，Service，即当应用程序调用startActivity(intent)方法时，能够把Intent转换成一个具体的包含程序名称及Component的信息，以便类加载器加载具体的Component。</p>
+</li>
+<li><p>权限检查，当应用程序调用某个需要特定权限的接口时，判断调用者是否有该权限</p>
+</li>
+<li><p>提供安装删除应用程序的接口</p>
+</li>
+</ul>
+<h2 id="u5B9E_u73B0_u539F_u7406"><a href="#u5B9E_u73B0_u539F_u7406" class="headerlink" title="实现原理"></a>实现原理</h2><p>应用安装时读取应用程序AndroidManifest.xml中的标签比如，request-feature、permission并将其保存在指定目录文件下，PmS在启动时会读取这些xml文件建立起一个包信息树，应用程序可以间接的从信息树种查到所需要的程序包信息。</p>
+<p><strong>两个目录</strong></p>
+<p>1.<code>/data/system/package.xml</code>文件记录系统中所有应用程序包管理相关信息，比如程序包名称是什么，安装包路径在哪里，程序都使用了哪些权限，等等。<br>2.<code>/system/etc/permissions/</code>文件夹下保存的xml文件用于应用程序权限管理。</p>
+<p>PmS在启动时会读取这两个文件来构建应用程序包信息树。PmS读取的数据会存在其内部类变量中。</p>
+<p><strong>数据结构</strong></p>
+<p>PmS的内部类Settings基本上包含了包管理所需要的全部信息，该类主要包含几类变量：</p>
+<ol>
+<li>包属性信息，包括packages.xml配置文件，配置文件备份，应用程序列表文件，包管理信息。</li>
+<li>用户Id相关信息，所有用户Id共享Id等，</li>
+<li>权限管理相关信息，保存所有的签名，所有的权限。</li>
+<li>删除信息，应用程序被卸载后，如果该程序的数据保存在外部存储空间中，则其数据目录默认不被删除。</li>
+</ol>
+<p>以上信息，均是从packages.xml配置文件中解析而来。</p>
+<p>PmS类中还包括以下重要数据：</p>
+<ul>
+<li>扫描应用程序目录得到的程序包信息</li>
+<li>系统所有权限名称</li>
+<li>系统所依赖的共享Java库</li>
+<li>从应用程序AndroidManifest.xml中解析出来的Activity，Service，BroadcastReceiver列表</li>
+</ul>
+<p>PmS在启动时会遍历应用程序目录下的所有程序，并从AndroidManifest.xml中提取出Intent-filter数据并将其保存在一个列表中，用于进行Intent-filter(<code>startXXX(intent)</code>)匹配。</p>
+<p><strong>关键方法</strong></p>
+<p>1.readPermission()<br>从<code>/system/etc/permissions/</code>目录下读取系统中定义的所有feature列表，给系统一些native分配权限信息。</p>
+<p>2.mSettings.readLP()<br>从<code>packages.xml</code>中读取所有安装包信息。其中会涉及到<code>package-backup.xml</code>文件的处理。<code>packages.xml</code>中使用各种各样的标签存储应用程序信息。</p>
+<p>3.mSettings.writeLP()<br>应用程序包扫描已经应用程序安装。应用程序安装分为两步，第一是把原始APK复制到相应程序目录下，第二则是为应用程序创建相应的数据目录及提取dex文件，并修改系统包管理信息等。mSettings.writeLP()主要完成第二步。</p>
+<p>4.scanPackageLI()<br>将mSettings.mPackages的数据写到packages.xml和packages.list文件中。</p>
+<p><strong>创建PmS</strong></p>
+<p>SystemServer启动时，PmS在从其静态main函数中创建，并将自己添加到系统服务中：<br><figure class="highlight aspectj"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="function">IPackageManager <span class="title">main</span><span class="params">(Context context,<span class="keyword">boolean</span> factoryTest)</span></span>&#123;</span><br><span class="line">    PackageManagerService m = <span class="keyword">new</span> PackageManagerService();</span><br><span class="line">    SystemManager.addService(<span class="string">"package"</span>,m);</span><br><span class="line">    <span class="keyword">return</span> m;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><strong>启动PmS</strong></p>
+<ol>
+<li>创建PmS.Settings数据对象并赋值</li>
+<li>创建Installer对象，该对象主要用于辅佐应用程序安装</li>
+<li>为几个静态数据文件路径变量赋值</li>
+<li>调用readPermission()方法从<code>/system/etc/permissions</code>目录下读取并解析全部XML文件</li>
+<li>调用mSettings.readLP()方法从<code>/data/system/packages.xml</code>文件中读取应用程序包管理相关信息。</li>
+<li>提取或者转换Java系统库中的dex文件</li>
+<li>为<code>/system/framwworks</code>,<code>/system/app</code>,<code>/vendor/app</code>目录添加FileObserver，FileObserver用于检测目录天剑删除的问价事件。</li>
+<li>调用scanDieLP()扫描上述三个目录中的所有应用程序，并将扫描结果保存到PmS的mPackages变量中。</li>
+<li>删除已经不存在的应用程序对应的数据记录</li>
+<li>清除没有安装成功的数据记录</li>
+<li>为<code>/data/app</code>添加FileObserver</li>
+<li>检测是否系统升级，如果升过则重新为应用程序设置权限</li>
+<li>将mSettings.mPackages中的数据从新写入packages.xml中</li>
+</ol>
+<p><strong>获取PmS</strong></p>
+<p>通过<code>ContextImpl.getPackageManager()</code>返回一个<code>PackageManager</code>对象，然后就可以调用改对象提供的各种API接口。</p>
+<p><code>getPackageManager</code>内部获取过程和<code>getSystemService</code>的过程基本相似，都是通过ServiceManager获取指定名称的IBinder对象进而获取PmS服务。（普通服务通过<code>context.getSystemService(&quot;serviceName&quot;)</code>获取）</p>
+
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android/">Android</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PackageManagerService/">PackageManagerService</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Pms/">Pms</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/包管理服务/">包管理服务</a></li></ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+	<a class="article-category-link" href="/categories/Android内核剖析/">Android内核剖析</a>
+	</div>
+
+
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+
+
+  
+    <article id="post-ReactNative实现banner轮播图" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2016/07/03/ReactNative实现banner轮播图/" class="article-date">
+  	<time datetime="2016-07-03T06:41:09.000Z" itemprop="datePublished">2016-07-03</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/07/03/ReactNative实现banner轮播图/">React Native实现banner轮播图</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>轮播图也叫焦点图，就是几张图片不断的来回切换，很多应用和网站中都可以看到。</p>
+<p>如果是前端开发，使用JavaScript+HTML实现，可以将几张图横向拼装在一起，开启setInterval定时任务不断改变拼装图片的left位置。</p>
+<p>如果是Android，即可以使用ViewPage，又可以使用ScrollView。如果使用ScrollView实现，则与前端实现方法基本相同，只不过需要自己控制手势操作。</p>
+<p>本文中使用React Native的ScrollView组件实现轮播图，废话不说了，先来看效果：</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1338260-db752742f9055256.gif?imageMogr2/auto-orient/strip" alt="效果图"></p>
+<p>动画很流畅（原谅我录屏的帧率比较小，转成gif就…），没有出现卡顿，同时支持手势滑动、点击事件，没有出现滑动冲突。总体来说效果还可以吧。</p>
+<p>实现原理很简单，开启个定时任务不断来回滚动几张图片，同Android使用ScrollView实现以及前端实现方法基本一致。代码全部使用的官方API，比较容易理解。</p>
+<h2 id="u8F6E_u64AD_u56FE_u7EC4_u4EF6_u4EE3_u7801"><a href="#u8F6E_u64AD_u56FE_u7EC4_u4EF6_u4EE3_u7801" class="headerlink" title="轮播图组件代码"></a>轮播图组件代码</h2><figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span><br><span class="line">* <span class="doctag">@Author</span>: zhaoshuo</span><br><span class="line">* <span class="doctag">@Description</span>: 轮播图组件</span><br><span class="line">*/</span></span><br><span class="line"></span><br><span class="line"><span class="string">'use strict'</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> React, &#123;</span><br><span class="line">    PropTypes,</span><br><span class="line">    TouchableWithoutFeedback,</span><br><span class="line">    ScrollView,</span><br><span class="line">    Animated,</span><br><span class="line">    View,</span><br><span class="line">    Component,</span><br><span class="line">&#125; from <span class="string">'react-native'</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> Dimensions from <span class="string">'Dimensions'</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 屏幕宽度</span></span><br><span class="line">var screenWidth = Dimensions.get(<span class="string">'window'</span>).width;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">FocusImage</span> <span class="keyword">extends</span> <span class="title">Component</span>&#123;</span></span><br><span class="line">    constructor(props) &#123;</span><br><span class="line">        <span class="keyword">super</span>(props);</span><br><span class="line">        <span class="keyword">this</span>.state = &#123;</span><br><span class="line">            <span class="string">images :</span> [<span class="string">'#dfe24a'</span>,<span class="string">'#68eaf9'</span>,<span class="string">'#ef9af9'</span>],<span class="comment">// 使用颜色代替图片</span></span><br><span class="line"><span class="label">            selectedImageIndex:</span> <span class="number">0</span>,</span><br><span class="line"><span class="label">            isNeedRun:</span> <span class="literal">true</span>,</span><br><span class="line">        &#125;;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">this</span>._index = <span class="number">0</span>;<span class="comment">// 当前正在显示的图片</span></span><br><span class="line">        <span class="keyword">this</span>._max = <span class="keyword">this</span>.state.images.length;<span class="comment">// 图片总数</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    render()&#123;</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// 图片列表</span></span><br><span class="line">        let images = <span class="keyword">this</span>.state.images.map((value,i) =&gt; &#123;</span><br><span class="line">            <span class="keyword">return</span> (</span><br><span class="line">                &lt;TouchableWithoutFeedback onPress=&#123;()=&gt;<span class="keyword">this</span>._showLog(i)&#125;&gt;</span><br><span class="line">                    &lt;View style=&#123;&#123;<span class="string">width:</span>screenWidth,<span class="string">height:</span><span class="number">130</span>,<span class="string">backgroundColor:</span>value&#125;&#125;/&gt;</span><br><span class="line">                &lt;/TouchableWithoutFeedback&gt;);</span><br><span class="line">        &#125;);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 小圆点指示器</span></span><br><span class="line">        let circles = <span class="keyword">this</span>.state.images.map((value,i) =&gt; &#123;</span><br><span class="line">            <span class="keyword">return</span> (&lt;View key=&#123;i&#125; style=&#123; (i == <span class="keyword">this</span>.state.selectedImageIndex) ? styles.circleSelected : styles.circle&#125;/&gt;);</span><br><span class="line">        &#125;);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 小圆点位置居中显示</span></span><br><span class="line">        let imageLength = <span class="keyword">this</span>.state.images.length;</span><br><span class="line">        let circleLength = <span class="number">6</span> * imageLength + <span class="number">5</span> * <span class="number">2</span> * imageLength;</span><br><span class="line">        let center = (screenWidth - circleLength) / <span class="number">2</span>;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> (</span><br><span class="line">            &lt;View style=&#123;styles.container&#125;&gt;</span><br><span class="line">                &lt;ScrollView horizontal=&#123;<span class="literal">true</span>&#125;</span><br><span class="line">                    showsHorizontalScrollIndicator=&#123;<span class="literal">false</span>&#125;</span><br><span class="line">                    showsVerticalScrollIndicator=&#123;<span class="literal">false</span>&#125;</span><br><span class="line">                    onTouchStart=&#123;()=&gt;<span class="keyword">this</span>._onTouchStart()&#125;</span><br><span class="line">                    onTouchMove=&#123;()=&gt;console.log(<span class="string">'onTouchMove'</span>)&#125;</span><br><span class="line">                    onTouchEnd=&#123;()=&gt;<span class="keyword">this</span>._onTouchEnd()&#125;</span><br><span class="line">                    onScroll=&#123;()=&gt;<span class="keyword">this</span>._onScroll()&#125;</span><br><span class="line">                    ref=&#123;(scrollView) =&gt; &#123; <span class="keyword">this</span>._scrollView = scrollView;&#125;&#125;&gt;</span><br><span class="line"></span><br><span class="line">                &lt;Animated.View style=&#123;&#123;<span class="string">flexDirection:</span><span class="string">'row'</span>&#125;&#125;&gt;&#123;images&#125;&lt;/Animated.View&gt;</span><br><span class="line">                &lt;/ScrollView&gt;</span><br><span class="line">                &lt;View style=&#123;&#123;<span class="string">flexDirection:</span><span class="string">'row'</span>,<span class="string">position:</span><span class="string">'absolute'</span>,<span class="string">top:</span><span class="number">115</span>,<span class="string">left:</span>center&#125;&#125;&gt;&#123;circles&#125;&lt;/View&gt;</span><br><span class="line">            &lt;/View&gt;</span><br><span class="line">        );</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    _onTouchStart()&#123;</span><br><span class="line">        <span class="comment">// 当手指按到scrollview时停止定时任务</span></span><br><span class="line">        clearInterval(<span class="keyword">this</span>._timer);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    _onTouchEnd()&#123;</span><br><span class="line">        <span class="comment">// 先滑动到指定index位置，再开启定时任务</span></span><br><span class="line">        <span class="keyword">this</span>._scrollView.scrollTo(&#123;<span class="string">x:</span><span class="keyword">this</span>._index * screenWidth&#125;,<span class="literal">true</span>);</span><br><span class="line">        <span class="comment">// 重置小圆点指示器</span></span><br><span class="line">        <span class="keyword">this</span>._refreshFocusIndicator();</span><br><span class="line">        <span class="keyword">this</span>._runFocusImage();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    _onScroll()&#123;</span><br><span class="line">        <span class="keyword">this</span>._contentOffsetX = <span class="keyword">this</span>._scrollView.contentOffset.x;</span><br><span class="line">        <span class="keyword">this</span>._index = Math.round(<span class="keyword">this</span>._contentOffsetX / screenWidth);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    _runFocusImage()&#123;</span><br><span class="line">        <span class="keyword">if</span>(<span class="keyword">this</span>._max &lt;= <span class="number">1</span>)&#123; <span class="comment">// 只有一个则不启动定时任务</span></span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">this</span>._timer = setInterval(function () &#123;</span><br><span class="line">            <span class="keyword">this</span>._index++;</span><br><span class="line">            <span class="keyword">if</span>(<span class="keyword">this</span>._index &gt;= <span class="keyword">this</span>._max)&#123;</span><br><span class="line">                <span class="keyword">this</span>._index = <span class="number">0</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">this</span>._scrollView.scrollTo(&#123;<span class="string">x:</span><span class="keyword">this</span>._index * screenWidth&#125;,<span class="literal">true</span>);</span><br><span class="line">            <span class="comment">// 重置小圆点指示器</span></span><br><span class="line">            <span class="keyword">this</span>._refreshFocusIndicator();</span><br><span class="line">        &#125;.bind(<span class="keyword">this</span>), <span class="number">4000</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    _stopFocusImage()&#123;</span><br><span class="line">        clearInterval(<span class="keyword">this</span>._timer);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    _refreshFocusIndicator()&#123;</span><br><span class="line">        <span class="keyword">this</span>.setState(&#123;<span class="string">selectedImageIndex:</span><span class="keyword">this</span>._index&#125;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    _showToast(i) &#123;</span><br><span class="line">        <span class="comment">//显示的内容</span></span><br><span class="line">        var message = <span class="string">'点击: '</span> + i;</span><br><span class="line">        console.log(message);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 组件装载完成</span></span><br><span class="line">    componentDidMount()&#123;</span><br><span class="line">        <span class="keyword">this</span>._runFocusImage();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 组件即将卸载</span></span><br><span class="line">    componentWillUnmount()&#123;</span><br><span class="line">        clearInterval(<span class="keyword">this</span>._timer);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 组件接收到新属性</span></span><br><span class="line">    componentWillReceiveProps(nextProps) &#123;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">const styles = &#123;</span><br><span class="line"><span class="label">    container:</span> &#123;</span><br><span class="line"><span class="label">        flex:</span><span class="number">1</span>,</span><br><span class="line"><span class="label">        flexDirection:</span><span class="string">'row'</span>,</span><br><span class="line">    &#125;,</span><br><span class="line"><span class="label">    circleContainer:</span> &#123;</span><br><span class="line"><span class="label">        position:</span><span class="string">'absolute'</span>,</span><br><span class="line"><span class="label">        left:</span><span class="number">0</span>,</span><br><span class="line"><span class="label">        top:</span><span class="number">120</span>,</span><br><span class="line">    &#125;,</span><br><span class="line"><span class="label">    circle:</span> &#123;</span><br><span class="line"><span class="label">        width:</span><span class="number">6</span>,</span><br><span class="line"><span class="label">        height:</span><span class="number">6</span>,</span><br><span class="line"><span class="label">        borderRadius:</span><span class="number">6</span>,</span><br><span class="line"><span class="label">        backgroundColor:</span><span class="string">'#f4797e'</span>,</span><br><span class="line"><span class="label">        marginHorizontal:</span><span class="number">5</span>,</span><br><span class="line">    &#125;,</span><br><span class="line"><span class="label">    circleSelected:</span> &#123;</span><br><span class="line"><span class="label">        width:</span><span class="number">6</span>,</span><br><span class="line"><span class="label">        height:</span><span class="number">6</span>,</span><br><span class="line"><span class="label">        borderRadius:</span><span class="number">6</span>,</span><br><span class="line"><span class="label">        backgroundColor:</span><span class="string">'#ffffff'</span>,</span><br><span class="line"><span class="label">        marginHorizontal:</span><span class="number">5</span>,</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">FocusImage.defaultProps = &#123;</span><br><span class="line">    <span class="string">isNeedRun :</span> <span class="literal">true</span>,</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">FocusImage.propTypes = &#123;</span><br><span class="line">    <span class="string">isNeedRun   :</span> PropTypes.bool,</span><br><span class="line">    <span class="string">onItemClick :</span> PropTypes.func,</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">module.exports = FocusImage;</span><br></pre></td></tr></table></figure>
+<p>功能逻辑比较简单，代码里有注释，我就不再做多余的介绍了。</p>
+<h2 id="u4F7F_u7528"><a href="#u4F7F_u7528" class="headerlink" title="使用"></a>使用</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> FocusImage <span class="keyword">from</span> <span class="string">'./../components/FocusImage'</span>;</span><br><span class="line"></span><br><span class="line">...</span><br><span class="line">render(</span><br><span class="line">    <span class="xml"><span class="tag">&lt;<span class="title">View</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="title">FocusImage</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="title">View</span>&gt;</span></span><br><span class="line">)</span>;</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Banner/">Banner</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/React-Native/">React Native</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/轮播图/">轮播图</a></li></ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+	<a class="article-category-link" href="/categories/React-Native/">React Native</a>
+	</div>
+
+
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+
+
+  
     <article id="post-Git版本管理策略" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
@@ -736,80 +921,11 @@
 
 
   
-    <article id="post-ReactNative实现banner轮播图" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/2016/06/23/ReactNative实现banner轮播图/" class="article-date">
-  	<time datetime="2016-06-23T06:41:09.000Z" itemprop="datePublished">2016-06-23</time>
-</a>
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/06/23/ReactNative实现banner轮播图/">React Native实现banner轮播图</a>
-    </h1>
-  
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>轮播图也叫焦点图，就是几张图片不断的来回切换，很多应用和网站中都可以看到。</p>
-<p>如果是前端开发，使用JavaScript+HTML实现，可以将几张图横向拼装在一起，开启setInterval定时任务不断改变拼装图片的left位置。</p>
-<p>如果是Android，即可以使用ViewPage，又可以使用ScrollView。如果使用ScrollView实现，则与前端实现方法基本相同，只不过需要自己控制手势操作。</p>
-<p>本文中使用React Native的ScrollView组件实现轮播图，废话不说了，先来看效果：</p>
-<p><img src="http://upload-images.jianshu.io/upload_images/1338260-db752742f9055256.gif?imageMogr2/auto-orient/strip" alt="效果图"></p>
-<p>动画很流畅（原谅我录屏的帧率比较小，转成gif就…），没有出现卡顿，同时支持手势滑动、点击事件，没有出现滑动冲突。总体来说效果还可以吧。</p>
-<p>实现原理很简单，开启个定时任务不断来回滚动几张图片，同Android使用ScrollView实现以及前端实现方法基本一致。代码全部使用的官方API，比较容易理解。</p>
-<h2 id="u8F6E_u64AD_u56FE_u7EC4_u4EF6_u4EE3_u7801"><a href="#u8F6E_u64AD_u56FE_u7EC4_u4EF6_u4EE3_u7801" class="headerlink" title="轮播图组件代码"></a>轮播图组件代码</h2><figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span><br><span class="line">* <span class="doctag">@Author</span>: zhaoshuo</span><br><span class="line">* <span class="doctag">@Description</span>: 轮播图组件</span><br><span class="line">*/</span></span><br><span class="line"></span><br><span class="line"><span class="string">'use strict'</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> React, &#123;</span><br><span class="line">    PropTypes,</span><br><span class="line">    TouchableWithoutFeedback,</span><br><span class="line">    ScrollView,</span><br><span class="line">    Animated,</span><br><span class="line">    View,</span><br><span class="line">    Component,</span><br><span class="line">&#125; from <span class="string">'react-native'</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> Dimensions from <span class="string">'Dimensions'</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 屏幕宽度</span></span><br><span class="line">var screenWidth = Dimensions.get(<span class="string">'window'</span>).width;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">FocusImage</span> <span class="keyword">extends</span> <span class="title">Component</span>&#123;</span></span><br><span class="line">    constructor(props) &#123;</span><br><span class="line">        <span class="keyword">super</span>(props);</span><br><span class="line">        <span class="keyword">this</span>.state = &#123;</span><br><span class="line">            <span class="string">images :</span> [<span class="string">'#dfe24a'</span>,<span class="string">'#68eaf9'</span>,<span class="string">'#ef9af9'</span>],<span class="comment">// 使用颜色代替图片</span></span><br><span class="line"><span class="label">            selectedImageIndex:</span> <span class="number">0</span>,</span><br><span class="line"><span class="label">            isNeedRun:</span> <span class="literal">true</span>,</span><br><span class="line">        &#125;;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">this</span>._index = <span class="number">0</span>;<span class="comment">// 当前正在显示的图片</span></span><br><span class="line">        <span class="keyword">this</span>._max = <span class="keyword">this</span>.state.images.length;<span class="comment">// 图片总数</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    render()&#123;</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// 图片列表</span></span><br><span class="line">        let images = <span class="keyword">this</span>.state.images.map((value,i) =&gt; &#123;</span><br><span class="line">            <span class="keyword">return</span> (</span><br><span class="line">                &lt;TouchableWithoutFeedback onPress=&#123;()=&gt;<span class="keyword">this</span>._showLog(i)&#125;&gt;</span><br><span class="line">                    &lt;View style=&#123;&#123;<span class="string">width:</span>screenWidth,<span class="string">height:</span><span class="number">130</span>,<span class="string">backgroundColor:</span>value&#125;&#125;/&gt;</span><br><span class="line">                &lt;/TouchableWithoutFeedback&gt;);</span><br><span class="line">        &#125;);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 小圆点指示器</span></span><br><span class="line">        let circles = <span class="keyword">this</span>.state.images.map((value,i) =&gt; &#123;</span><br><span class="line">            <span class="keyword">return</span> (&lt;View key=&#123;i&#125; style=&#123; (i == <span class="keyword">this</span>.state.selectedImageIndex) ? styles.circleSelected : styles.circle&#125;/&gt;);</span><br><span class="line">        &#125;);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 小圆点位置居中显示</span></span><br><span class="line">        let imageLength = <span class="keyword">this</span>.state.images.length;</span><br><span class="line">        let circleLength = <span class="number">6</span> * imageLength + <span class="number">5</span> * <span class="number">2</span> * imageLength;</span><br><span class="line">        let center = (screenWidth - circleLength) / <span class="number">2</span>;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> (</span><br><span class="line">            &lt;View style=&#123;styles.container&#125;&gt;</span><br><span class="line">                &lt;ScrollView horizontal=&#123;<span class="literal">true</span>&#125;</span><br><span class="line">                    showsHorizontalScrollIndicator=&#123;<span class="literal">false</span>&#125;</span><br><span class="line">                    showsVerticalScrollIndicator=&#123;<span class="literal">false</span>&#125;</span><br><span class="line">                    onTouchStart=&#123;()=&gt;<span class="keyword">this</span>._onTouchStart()&#125;</span><br><span class="line">                    onTouchMove=&#123;()=&gt;console.log(<span class="string">'onTouchMove'</span>)&#125;</span><br><span class="line">                    onTouchEnd=&#123;()=&gt;<span class="keyword">this</span>._onTouchEnd()&#125;</span><br><span class="line">                    onScroll=&#123;()=&gt;<span class="keyword">this</span>._onScroll()&#125;</span><br><span class="line">                    ref=&#123;(scrollView) =&gt; &#123; <span class="keyword">this</span>._scrollView = scrollView;&#125;&#125;&gt;</span><br><span class="line"></span><br><span class="line">                &lt;Animated.View style=&#123;&#123;<span class="string">flexDirection:</span><span class="string">'row'</span>&#125;&#125;&gt;&#123;images&#125;&lt;/Animated.View&gt;</span><br><span class="line">                &lt;/ScrollView&gt;</span><br><span class="line">                &lt;View style=&#123;&#123;<span class="string">flexDirection:</span><span class="string">'row'</span>,<span class="string">position:</span><span class="string">'absolute'</span>,<span class="string">top:</span><span class="number">115</span>,<span class="string">left:</span>center&#125;&#125;&gt;&#123;circles&#125;&lt;/View&gt;</span><br><span class="line">            &lt;/View&gt;</span><br><span class="line">        );</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    _onTouchStart()&#123;</span><br><span class="line">        <span class="comment">// 当手指按到scrollview时停止定时任务</span></span><br><span class="line">        clearInterval(<span class="keyword">this</span>._timer);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    _onTouchEnd()&#123;</span><br><span class="line">        <span class="comment">// 先滑动到指定index位置，再开启定时任务</span></span><br><span class="line">        <span class="keyword">this</span>._scrollView.scrollTo(&#123;<span class="string">x:</span><span class="keyword">this</span>._index * screenWidth&#125;,<span class="literal">true</span>);</span><br><span class="line">        <span class="comment">// 重置小圆点指示器</span></span><br><span class="line">        <span class="keyword">this</span>._refreshFocusIndicator();</span><br><span class="line">        <span class="keyword">this</span>._runFocusImage();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    _onScroll()&#123;</span><br><span class="line">        <span class="keyword">this</span>._contentOffsetX = <span class="keyword">this</span>._scrollView.contentOffset.x;</span><br><span class="line">        <span class="keyword">this</span>._index = Math.round(<span class="keyword">this</span>._contentOffsetX / screenWidth);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    _runFocusImage()&#123;</span><br><span class="line">        <span class="keyword">if</span>(<span class="keyword">this</span>._max &lt;= <span class="number">1</span>)&#123; <span class="comment">// 只有一个则不启动定时任务</span></span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">this</span>._timer = setInterval(function () &#123;</span><br><span class="line">            <span class="keyword">this</span>._index++;</span><br><span class="line">            <span class="keyword">if</span>(<span class="keyword">this</span>._index &gt;= <span class="keyword">this</span>._max)&#123;</span><br><span class="line">                <span class="keyword">this</span>._index = <span class="number">0</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">this</span>._scrollView.scrollTo(&#123;<span class="string">x:</span><span class="keyword">this</span>._index * screenWidth&#125;,<span class="literal">true</span>);</span><br><span class="line">            <span class="comment">// 重置小圆点指示器</span></span><br><span class="line">            <span class="keyword">this</span>._refreshFocusIndicator();</span><br><span class="line">        &#125;.bind(<span class="keyword">this</span>), <span class="number">4000</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    _stopFocusImage()&#123;</span><br><span class="line">        clearInterval(<span class="keyword">this</span>._timer);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    _refreshFocusIndicator()&#123;</span><br><span class="line">        <span class="keyword">this</span>.setState(&#123;<span class="string">selectedImageIndex:</span><span class="keyword">this</span>._index&#125;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    _showToast(i) &#123;</span><br><span class="line">        <span class="comment">//显示的内容</span></span><br><span class="line">        var message = <span class="string">'点击: '</span> + i;</span><br><span class="line">        console.log(message);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 组件装载完成</span></span><br><span class="line">    componentDidMount()&#123;</span><br><span class="line">        <span class="keyword">this</span>._runFocusImage();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 组件即将卸载</span></span><br><span class="line">    componentWillUnmount()&#123;</span><br><span class="line">        clearInterval(<span class="keyword">this</span>._timer);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 组件接收到新属性</span></span><br><span class="line">    componentWillReceiveProps(nextProps) &#123;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">const styles = &#123;</span><br><span class="line"><span class="label">    container:</span> &#123;</span><br><span class="line"><span class="label">        flex:</span><span class="number">1</span>,</span><br><span class="line"><span class="label">        flexDirection:</span><span class="string">'row'</span>,</span><br><span class="line">    &#125;,</span><br><span class="line"><span class="label">    circleContainer:</span> &#123;</span><br><span class="line"><span class="label">        position:</span><span class="string">'absolute'</span>,</span><br><span class="line"><span class="label">        left:</span><span class="number">0</span>,</span><br><span class="line"><span class="label">        top:</span><span class="number">120</span>,</span><br><span class="line">    &#125;,</span><br><span class="line"><span class="label">    circle:</span> &#123;</span><br><span class="line"><span class="label">        width:</span><span class="number">6</span>,</span><br><span class="line"><span class="label">        height:</span><span class="number">6</span>,</span><br><span class="line"><span class="label">        borderRadius:</span><span class="number">6</span>,</span><br><span class="line"><span class="label">        backgroundColor:</span><span class="string">'#f4797e'</span>,</span><br><span class="line"><span class="label">        marginHorizontal:</span><span class="number">5</span>,</span><br><span class="line">    &#125;,</span><br><span class="line"><span class="label">    circleSelected:</span> &#123;</span><br><span class="line"><span class="label">        width:</span><span class="number">6</span>,</span><br><span class="line"><span class="label">        height:</span><span class="number">6</span>,</span><br><span class="line"><span class="label">        borderRadius:</span><span class="number">6</span>,</span><br><span class="line"><span class="label">        backgroundColor:</span><span class="string">'#ffffff'</span>,</span><br><span class="line"><span class="label">        marginHorizontal:</span><span class="number">5</span>,</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">FocusImage.defaultProps = &#123;</span><br><span class="line">    <span class="string">isNeedRun :</span> <span class="literal">true</span>,</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">FocusImage.propTypes = &#123;</span><br><span class="line">    <span class="string">isNeedRun   :</span> PropTypes.bool,</span><br><span class="line">    <span class="string">onItemClick :</span> PropTypes.func,</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">module.exports = FocusImage;</span><br></pre></td></tr></table></figure>
-<p>功能逻辑比较简单，代码里有注释，我就不再做多余的介绍了。</p>
-<h2 id="u4F7F_u7528"><a href="#u4F7F_u7528" class="headerlink" title="使用"></a>使用</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> FocusImage <span class="keyword">from</span> <span class="string">'./../components/FocusImage'</span>;</span><br><span class="line"></span><br><span class="line">...</span><br><span class="line">render(</span><br><span class="line">    <span class="xml"><span class="tag">&lt;<span class="title">View</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="title">FocusImage</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="title">View</span>&gt;</span></span><br><span class="line">)</span>;</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Banner/">Banner</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/React-Native/">React Native</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/轮播图/">轮播图</a></li></ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-	<a class="article-category-link" href="/categories/React-Native/">React Native</a>
-	</div>
-
-
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-
-
-  
     <article id="post-ReactNative数据存储" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
-      <a href="/2016/06/22/ReactNative数据存储/" class="article-date">
-  	<time datetime="2016-06-22T06:38:11.000Z" itemprop="datePublished">2016-06-22</time>
+      <a href="/2016/06/25/ReactNative数据存储/" class="article-date">
+  	<time datetime="2016-06-25T06:38:11.000Z" itemprop="datePublished">2016-06-25</time>
 </a>
     </div>
   
@@ -822,7 +938,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2016/06/22/ReactNative数据存储/">React Native数据存储</a>
+      <a class="article-title" href="/2016/06/25/ReactNative数据存储/">React Native数据存储</a>
     </h1>
   
 
@@ -957,96 +1073,6 @@
       
 	<div class="article-category tagcloud">
 	<a class="article-category-link" href="/categories/React-Native/">React Native</a>
-	</div>
-
-
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-
-
-  
-    <article id="post-Android进程通信原理" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/2016/06/11/Android进程通信原理/" class="article-date">
-  	<time datetime="2016-06-11T06:51:56.000Z" itemprop="datePublished">2016-06-11</time>
-</a>
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/06/11/Android进程通信原理/">Android进程通信原理</a>
-    </h1>
-  
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Android系统提供了一些通用服务，比如音乐打电话发短信，WIFI，定位，输入法，传感器等。应用程序与这些通用服务运行在不同的进程中，如果应用程序想要与这些通用服务交互就要涉及到进程间通信，Binder就是为了Android进程间通信而设计的。</p>
-<h2 id="Binder_u6846_u67B6"><a href="#Binder_u6846_u67B6" class="headerlink" title="Binder框架"></a>Binder框架</h2><p>Binder是一种架构，这种架构提供了服务端接口、Binder驱动、客户端接口三个模块。</p>
-<p><strong>服务端</strong><br>Binder服务端相当于一个Binder类对象。当创建该对象时，其内部会启动一个线程不断接收Binder驱动发送的消息。收到消息后会执行Binder.onTransact()方法。所以要实现一个Binder服务就必须重载onTransact()方法。</p>
-<p>onTransact()方法通常用来做数据格式转换，按约定的顺序取出Binder客户端发送来的数据并转换成服务端识别的数据格式。</p>
-<p><strong>Binder驱动</strong><br>Binder驱动运行在内核态，其所有操作都是基于内存而非硬件，客户端与服务端通信时需要Binder驱动进行中转。</p>
-<p>当一个服务端Binder被创建时其在Binder驱动中同时会创建一个mRemote引用指向服务端。客户端要访问服务端时首先要获取服务端在Binder中的引用mRemote，获取引用后就可以通过mRemote.transact()方法向服务端发送消息。</p>
-<p>transact()方法实现了以下几个功能：</p>
-<ul>
-<li>以线程间消息通信的模式向服务端发送客户端传递过来的参数。</li>
-<li>挂起当前客户端线程，等待服务端线程执行完毕后的通知(notify)</li>
-<li>接收服务端线程通知，继续执行客户端线程，并返回执行结果</li>
-</ul>
-<p><strong>客户端</strong><br>这里就是指我们需要和系统服务交互的应用程序。应用程序使用startService()与应用程序Service建立连接，使用getSystemService()与系统Service建立连接，从而进行通信。</p>
-<p><strong>数据格式</strong><br>在进行IPC通信时需要约定客户端与服务端通信的数据格式。Android使用AIDL（Android Interface Definition Language）约定数据格式。</p>
-<p>Android提供了一个AIDL工具，可以把AIDL文件转换成一个Java类，在该Java类中同时重载了onTransact()方法和transact()方法，统一了存入和读取参数。</p>
-<h2 id="u5B9E_u73B0Binder_u670D_u52A1_u7AEF"><a href="#u5B9E_u73B0Binder_u670D_u52A1_u7AEF" class="headerlink" title="实现Binder服务端"></a>实现Binder服务端</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MusicService</span> <span class="keyword">extends</span> <span class="title">Binder</span></span>&#123;</span><br><span class="line">    <span class="annotation">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">boolean</span> <span class="title">onTransact</span><span class="params">(<span class="keyword">int</span> code, Parcel data, Parcel reply, <span class="keyword">int</span> flags)</span> <span class="keyword">throws</span> RemoteException</span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">super</span>.onTransact(code,data,reply, flags);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">start</span><span class="params">(String filePath)</span></span>&#123;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">stop</span><span class="params">()</span></span>&#123;&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>以上代码基于Binder创建了一个Service，使用startService()方法启动后就可以看到DDMS中多了一个线程。</p>
-<p>重载onTransact(int code, Parcel data, Parcel reply, int flags)方法：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">switch</span>(code)&#123;</span><br><span class="line">     code <span class="number">1000</span>:</span><br><span class="line">            data.enforceInterface(<span class="string">"MusicService"</span>);<span class="comment">// 数据校验与客户端writeInterfaceToken()对应</span></span><br><span class="line">            String filePath = data.readString();<span class="comment">//读取一个字符串</span></span><br><span class="line">            start(filePath);</span><br><span class="line">            <span class="comment">// reply.write<span class="label">XXX();//如果需要返回结果则写入reply中</span></span></span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>data中保存着客户端传递过来的参数，onTransact()方法内部需要从data中读取客户端传递的参数。参数的位置格式需要在AIDL文件中约束。<br>reply中保存服务端返回客户端的结果，如果需要返回则调用Parcel提供的相关方法写入结果。参数的位置格式需要在AIDL文件中约束。<br>code变量标识客户端希望服务端执行哪个方法，这里假定1000执行start()方法。<br>flags表示IPC调用模式：0代表”双向模式”，服务端在执行完指定服务后会返回数据；1代表”单向模式”，服务端在执行完指定服务后不反回任何数据。</p>
-<h2 id="u5B9E_u73B0Binder_u5BA2_u6237_u7AEF"><a href="#u5B9E_u73B0Binder_u5BA2_u6237_u7AEF" class="headerlink" title="实现Binder客户端"></a>实现Binder客户端</h2><p>首先在startService()，getSystemService()中获取服务端Binder的引用，然后将参数按AIDL定义的格式写入data中并调用mRemote.transact()方法传入参数，服务端会在onTransact()方法中取出这里出入的参数：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">IBinder mRemote = <span class="keyword">null</span>;</span><br><span class="line">String filePath = <span class="string">"/sdcard/music/xxx.mp3"</span>;</span><br><span class="line"><span class="keyword">int</span> code = <span class="number">1000</span>;</span><br><span class="line">Parcel data = Parcel.obtain();</span><br><span class="line">Parcel reply = Parcel.obtain();</span><br><span class="line">data.writeInterfaceToken(<span class="string">"MusicService"</span>);</span><br><span class="line">data.writeString(filePath);</span><br><span class="line">mRemote.transact(code,data,reply,<span class="number">0</span>);</span><br><span class="line">IBinder binder = reply.readStrongBinder();</span><br><span class="line">reply.recycle();</span><br><span class="line">data.recycle();</span><br></pre></td></tr></table></figure></p>
-<p>调用mRemote.transact()方法后，Binder驱动会挂起当前客户端线程，并向服务端发送一个消息，这个消息就包括客户端传递的参数。服务端接收到消息，解析数据执行完相关任务后会把执行结果写入reply中，然后向Binder驱动发送一个notify消息，Binder驱动从挂起处唤醒客户端线程继续执行。</p>
-<h2 id="u7CFB_u7EDFService_u4E0E_u5E94_u7528_u7A0B_u5E8FService"><a href="#u7CFB_u7EDFService_u4E0E_u5E94_u7528_u7A0B_u5E8FService" class="headerlink" title="系统Service与应用程序Service"></a>系统Service与应用程序Service</h2><p>Service也就是服务分为两种，一种是系统创建的Service，另一种是应用程序自定义的Service。这两种Service都是Binder服务端。</p>
-<p><strong>系统Service</strong><br>系统Service在系统系统初始化时从SystemServer进程中启动。常见的有PowerManagerService（电源管理服务），VibratorService（振动传感器服务），WindowManagerService（窗口管理服务）NotificationManagerService等等，每个系统服务都是一个Binder，都运行在一个独立的线程中。</p>
-<p>系统提供了一个ServiceManager类来管理系统服务ServiceManager本身也是一个Binder，运行在一个独立的进程中，其提供了一个全局Binder供应用程序使用，应用程序获取其他系统服务都是通过ServiceManager的全局Binder来获取的。</p>
-<p>这设计的好处仅仅暴露一个全局Binder引用，其他系统服务则隐藏起来，从而有助于系统扩展，以及调用系统服务的安全检查。</p>
-<p>系统Service在启动时首先向ServiceManager注册Service（注册自己），当调用getSystemService(serviceName)获取系统服务时，会间接调用到ServiceManager.getService(String name)方法。getService()实现如下所示：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> IBinder <span class="title">getService</span><span class="params">(String name)</span></span>&#123;</span><br><span class="line">    <span class="keyword">try</span>&#123;</span><br><span class="line">        IBinder service = sCache.get(name);</span><br><span class="line">        <span class="keyword">if</span>(service != <span class="keyword">null</span>)&#123;</span><br><span class="line">            <span class="keyword">return</span> service;</span><br><span class="line">        &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">            <span class="keyword">return</span> getIServiceManager().getService(name);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; <span class="keyword">catch</span>(RemoteException e)&#123;</span><br><span class="line">        Log.e(TAG,<span class="string">"error in get Service"</span>, e);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>首先从缓存中获取，没获取到则从getIServiceManager()中获取，getIServiceManager()返回的是系统唯一ServiceManager的Binder。</p>
-<p><strong>应用程序Service</strong><br>系统在ActivityManagerService中提供了startService()方法来启动应用程序自定义Service。客户端使用以下方法和应用程序Service建立连接：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> ComponentName <span class="title">startService</span><span class="params">(Intent intent)</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">bindService</span><span class="params">(Intent service, ServiceConnection conn,<span class="keyword">int</span> flags)</span></span></span><br></pre></td></tr></table></figure></p>
-<p>startService用于启动一个服务，bindService用于绑定一个服务，bindService的第二个参数是获取服务端Binder的关键所在：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">ServiceConnection</span></span>&#123;</span><br><span class="line">     <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onServiceConnected</span><span class="params">(ComponentName name,IBinder service)</span></span>;</span><br><span class="line">     <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onServiceDisconnected</span><span class="params">(ComponentName name)</span></span>;    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>onServiceConnected()方法的第二个变量就是我们需要的服务端Binder的引用，当客户端请求AmS启动某个Service，如果该Service正常启动，那么AmS就会远程调用ActivityThread类中的ApplicationThread对象，调用的参数包括Service的Binder引用，然后在ApplicationThread中会回调bindService()方法中的conn接口。因此，在客户端中，可以在onServiceConnected()方法中将其参数Service保存为一个全局变量，从而在客户端任何地方都可以随时调用该服务。</p>
-
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android/">Android</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/IPC/">IPC</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/进程间通信/">进程间通信</a></li></ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-	<a class="article-category-link" href="/categories/Android内核剖析/">Android内核剖析</a>
 	</div>
 
 

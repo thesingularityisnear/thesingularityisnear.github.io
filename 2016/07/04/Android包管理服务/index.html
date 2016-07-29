@@ -4,22 +4,24 @@
   <meta charset="utf-8">
   
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
-  <title>科学上网的正确姿势 | Gooooood</title>
+  <title>Android包管理服务 | Gooooood</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="最近各家VPN代理都无法登陆，无奈需要查阅一些资料，所以决定自已动手搭建一台VPN服务器。对比了网上搭建VPN的几种方式，决定使用Ubuntu+Shadowsocks搭建VPN服务器。
-不同于传统VPN，Shadowsocks(中文名影梭)工作在应用层，使用自行设计的协议进行加密通信。除创建TCP连接外无需握手，每次请求只转发一个连接，因此使用起来网速较快，在移动设备上也比较省电。影梭的设计目的就">
+  <meta name="description" content="PackageManagerService（PmS）包管理服务运行在SystemServer进程中，是一个安卓系统服务，主要用于实现应用安装卸载，组件查询匹配，权限管理等功能。
+主要功能
+根据Intent匹配到具体的Activity，Provider，Service，即当应用程序调用startActivity(intent)方法时，能够把Intent转换成一个具体的包含程序名称及Component">
 <meta property="og:type" content="article">
-<meta property="og:title" content="科学上网的正确姿势">
-<meta property="og:url" content="http://zhaoshuo.me/2016/01/16/科学上网/index.html">
+<meta property="og:title" content="Android包管理服务">
+<meta property="og:url" content="http://zhaoshuo.me/2016/07/04/Android包管理服务/index.html">
 <meta property="og:site_name" content="Gooooood">
-<meta property="og:description" content="最近各家VPN代理都无法登陆，无奈需要查阅一些资料，所以决定自已动手搭建一台VPN服务器。对比了网上搭建VPN的几种方式，决定使用Ubuntu+Shadowsocks搭建VPN服务器。
-不同于传统VPN，Shadowsocks(中文名影梭)工作在应用层，使用自行设计的协议进行加密通信。除创建TCP连接外无需握手，每次请求只转发一个连接，因此使用起来网速较快，在移动设备上也比较省电。影梭的设计目的就">
-<meta property="og:image" content="http://7xvipn.com1.z0.glb.clouddn.com/1338260-c72f7cc452701b1e.png?imageView2/2/w/550">
-<meta property="og:updated_time" content="2016-06-20T08:07:04.000Z">
+<meta property="og:description" content="PackageManagerService（PmS）包管理服务运行在SystemServer进程中，是一个安卓系统服务，主要用于实现应用安装卸载，组件查询匹配，权限管理等功能。
+主要功能
+根据Intent匹配到具体的Activity，Provider，Service，即当应用程序调用startActivity(intent)方法时，能够把Intent转换成一个具体的包含程序名称及Component">
+<meta property="og:updated_time" content="2016-07-29T06:51:08.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="科学上网的正确姿势">
-<meta name="twitter:description" content="最近各家VPN代理都无法登陆，无奈需要查阅一些资料，所以决定自已动手搭建一台VPN服务器。对比了网上搭建VPN的几种方式，决定使用Ubuntu+Shadowsocks搭建VPN服务器。
-不同于传统VPN，Shadowsocks(中文名影梭)工作在应用层，使用自行设计的协议进行加密通信。除创建TCP连接外无需握手，每次请求只转发一个连接，因此使用起来网速较快，在移动设备上也比较省电。影梭的设计目的就">
+<meta name="twitter:title" content="Android包管理服务">
+<meta name="twitter:description" content="PackageManagerService（PmS）包管理服务运行在SystemServer进程中，是一个安卓系统服务，主要用于实现应用安装卸载，组件查询匹配，权限管理等功能。
+主要功能
+根据Intent匹配到具体的Activity，Provider，Service，即当应用程序调用startActivity(intent)方法时，能够把Intent转换成一个具体的包含程序名称及Component">
   
     <link rel="alternative" href="/atom.xml" title="Gooooood" type="application/atom+xml">
   
@@ -197,11 +199,11 @@
 	</div>
 </nav>
 
-      <div class="body-wrap"><article id="post-科学上网" class="article article-type-post" itemscope itemprop="blogPost">
+      <div class="body-wrap"><article id="post-Android包管理服务" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
-      <a href="/2016/01/16/科学上网/" class="article-date">
-  	<time datetime="2016-01-16T10:32:43.000Z" itemprop="datePublished">2016-01-16</time>
+      <a href="/2016/07/04/Android包管理服务/" class="article-date">
+  	<time datetime="2016-07-04T06:47:35.000Z" itemprop="datePublished">2016-07-04</time>
 </a>
     </div>
   
@@ -214,7 +216,7 @@
         
   
     <h1 class="article-title" itemprop="name">
-      科学上网的正确姿势
+      Android包管理服务
     </h1>
   
 
@@ -223,12 +225,12 @@
       <div class="article-info article-info-post">
         
 	<div class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/VPN/">VPN</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/代理/">代理</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/科学上网/">科学上网</a></li></ul>
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Android/">Android</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PackageManagerService/">PackageManagerService</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Pms/">Pms</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/包管理服务/">包管理服务</a></li></ul>
 	</div>
 
         
 	<div class="article-category tagcloud">
-	<a class="article-category-link" href="/categories/教程/">教程</a>
+	<a class="article-category-link" href="/categories/Android内核剖析/">Android内核剖析</a>
 	</div>
 
 
@@ -238,24 +240,62 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>最近各家VPN代理都无法登陆，无奈需要查阅一些资料，所以决定自已动手搭建一台VPN服务器。对比了网上搭建VPN的几种方式，决定使用Ubuntu+Shadowsocks搭建VPN服务器。</p>
-<p>不同于传统VPN，Shadowsocks(中文名影梭)工作在应用层，使用自行设计的协议进行加密通信。除创建TCP连接外无需握手，每次请求只转发一个连接，因此使用起来网速较快，在移动设备上也比较省电。影梭的设计目的就是协助用户在严苛的网络环境中突破封锁，所以不容易被墙。而且SS服务器搭建极其简便，客户端软件在MAC，window，Linux，IOS，android上都有支持。</p>
-<h2 id="u8D2D_u4E70_u56FD_u5916_u4E91_u4E3B_u673A"><a href="#u8D2D_u4E70_u56FD_u5916_u4E91_u4E3B_u673A" class="headerlink" title="购买国外云主机"></a>购买国外云主机</h2><p>这里选择购买阿里云主机，在阿里云官网上购买一台位于国外的ECS服务器，系统选择Ubuntu。并设置密码。</p>
-<h2 id="u642D_u5EFAVPN_u670D_u52A1_u5668"><a href="#u642D_u5EFAVPN_u670D_u52A1_u5668" class="headerlink" title="搭建VPN服务器"></a>搭建VPN服务器</h2><p><strong>1. 连接</strong><br>打开命令行工具，输入以下命令连接远端服务器<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ ssh root@你的ip地址</span><br></pre></td></tr></table></figure></p>
-<p>windows用户下载secure shell client，选择quick connect直接输入ip地址，密码连接。</p>
-<p><strong>2. 安装</strong><br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ apt-get update</span><br><span class="line">$ apt-get install python-pip</span><br><span class="line">$ pip install shadowsocks</span><br></pre></td></tr></table></figure></p>
-<p><strong>3. 配置</strong><br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ vim /etc/shadowsocks.json</span><br></pre></td></tr></table></figure></p>
-<p>创建配置文件，将如下配置输入到shadowsocks.json中：</p>
-<blockquote>
-<p>{<br>“server”:”你服务器的ip地址”,<br>“server_port”:8388,<br>“local_address”:”127.0.0.1”,<br>“local_port”:1080,<br>“password”:”你要设置的登录密码”,<br>“timeout”:600,<br>“method”:”aes-256-cfb”,<br>“fast_open”:false<br>}</p>
-</blockquote>
-<p>method代表加密方式，推荐使用 AES-256-CFB 或 RC4-MD5<br>为了支持这些加密方式，我们需要安装：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ apt-get install python-m2crypto</span><br></pre></td></tr></table></figure></p>
-<p><strong>4. 启动</strong><br>推荐使用后台启动，这样我们的客户端可以随时连接到服务器上<br>后台启动<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ ssserver -c /etc/shadowsocks.json <span class="operator">-d</span> start</span><br></pre></td></tr></table></figure></p>
-<p>后台关闭<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ ssserver -c /etc/shadowsocks.json <span class="operator">-d</span> stop</span><br></pre></td></tr></table></figure></p>
-<p><strong>5. 客户端</strong><br>下载<a href="https://github.com/shadowsocks/shadowsocks-iOS/releases" target="_blank" rel="external">Mac</a>，<a href="https://cloud.cokebar.info/index.php/s/rKTIRmkNXn1VUZ4" target="_blank" rel="external">Windows</a>，<a href="https://github.com/shadowsocks/shadowsocks-gui" target="_blank" rel="external">Linux</a>，<a href="http://www.iyingsuo.com/android-shadowsocks-tutorials.html" target="_blank" rel="external">Android</a>，IOS</p>
-<p><strong>6. 客户端配置</strong><br><img src="http://7xvipn.com1.z0.glb.clouddn.com/1338260-c72f7cc452701b1e.png?imageView2/2/w/550" alt="客户端配置"><br>只需要填写你服务器的ip地址以及密码，选择加密方式就可以科学上网了。</p>
-<hr>
-<p>参考资料<br><a href="https://github.com/ziggear/shadowsocks" target="_blank" rel="external">https://github.com/ziggear/shadowsocks</a><br><a href="https://zh.wikipedia.org/wiki/Shadowsocks" target="_blank" rel="external">https://zh.wikipedia.org/wiki/Shadowsocks</a></p>
+        <p>PackageManagerService（PmS）包管理服务运行在SystemServer进程中，是一个安卓系统服务，主要用于实现应用安装卸载，组件查询匹配，权限管理等功能。</p>
+<h2 id="u4E3B_u8981_u529F_u80FD"><a href="#u4E3B_u8981_u529F_u80FD" class="headerlink" title="主要功能"></a>主要功能</h2><ul>
+<li><p>根据Intent匹配到具体的Activity，Provider，Service，即当应用程序调用startActivity(intent)方法时，能够把Intent转换成一个具体的包含程序名称及Component的信息，以便类加载器加载具体的Component。</p>
+</li>
+<li><p>权限检查，当应用程序调用某个需要特定权限的接口时，判断调用者是否有该权限</p>
+</li>
+<li><p>提供安装删除应用程序的接口</p>
+</li>
+</ul>
+<h2 id="u5B9E_u73B0_u539F_u7406"><a href="#u5B9E_u73B0_u539F_u7406" class="headerlink" title="实现原理"></a>实现原理</h2><p>应用安装时读取应用程序AndroidManifest.xml中的标签比如，request-feature、permission并将其保存在指定目录文件下，PmS在启动时会读取这些xml文件建立起一个包信息树，应用程序可以间接的从信息树种查到所需要的程序包信息。</p>
+<p><strong>两个目录</strong></p>
+<p>1.<code>/data/system/package.xml</code>文件记录系统中所有应用程序包管理相关信息，比如程序包名称是什么，安装包路径在哪里，程序都使用了哪些权限，等等。<br>2.<code>/system/etc/permissions/</code>文件夹下保存的xml文件用于应用程序权限管理。</p>
+<p>PmS在启动时会读取这两个文件来构建应用程序包信息树。PmS读取的数据会存在其内部类变量中。</p>
+<p><strong>数据结构</strong></p>
+<p>PmS的内部类Settings基本上包含了包管理所需要的全部信息，该类主要包含几类变量：</p>
+<ol>
+<li>包属性信息，包括packages.xml配置文件，配置文件备份，应用程序列表文件，包管理信息。</li>
+<li>用户Id相关信息，所有用户Id共享Id等，</li>
+<li>权限管理相关信息，保存所有的签名，所有的权限。</li>
+<li>删除信息，应用程序被卸载后，如果该程序的数据保存在外部存储空间中，则其数据目录默认不被删除。</li>
+</ol>
+<p>以上信息，均是从packages.xml配置文件中解析而来。</p>
+<p>PmS类中还包括以下重要数据：</p>
+<ul>
+<li>扫描应用程序目录得到的程序包信息</li>
+<li>系统所有权限名称</li>
+<li>系统所依赖的共享Java库</li>
+<li>从应用程序AndroidManifest.xml中解析出来的Activity，Service，BroadcastReceiver列表</li>
+</ul>
+<p>PmS在启动时会遍历应用程序目录下的所有程序，并从AndroidManifest.xml中提取出Intent-filter数据并将其保存在一个列表中，用于进行Intent-filter(<code>startXXX(intent)</code>)匹配。</p>
+<p><strong>关键方法</strong></p>
+<p>1.readPermission()<br>从<code>/system/etc/permissions/</code>目录下读取系统中定义的所有feature列表，给系统一些native分配权限信息。</p>
+<p>2.mSettings.readLP()<br>从<code>packages.xml</code>中读取所有安装包信息。其中会涉及到<code>package-backup.xml</code>文件的处理。<code>packages.xml</code>中使用各种各样的标签存储应用程序信息。</p>
+<p>3.mSettings.writeLP()<br>应用程序包扫描已经应用程序安装。应用程序安装分为两步，第一是把原始APK复制到相应程序目录下，第二则是为应用程序创建相应的数据目录及提取dex文件，并修改系统包管理信息等。mSettings.writeLP()主要完成第二步。</p>
+<p>4.scanPackageLI()<br>将mSettings.mPackages的数据写到packages.xml和packages.list文件中。</p>
+<p><strong>创建PmS</strong></p>
+<p>SystemServer启动时，PmS在从其静态main函数中创建，并将自己添加到系统服务中：<br><figure class="highlight aspectj"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="function">IPackageManager <span class="title">main</span><span class="params">(Context context,<span class="keyword">boolean</span> factoryTest)</span></span>&#123;</span><br><span class="line">    PackageManagerService m = <span class="keyword">new</span> PackageManagerService();</span><br><span class="line">    SystemManager.addService(<span class="string">"package"</span>,m);</span><br><span class="line">    <span class="keyword">return</span> m;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><strong>启动PmS</strong></p>
+<ol>
+<li>创建PmS.Settings数据对象并赋值</li>
+<li>创建Installer对象，该对象主要用于辅佐应用程序安装</li>
+<li>为几个静态数据文件路径变量赋值</li>
+<li>调用readPermission()方法从<code>/system/etc/permissions</code>目录下读取并解析全部XML文件</li>
+<li>调用mSettings.readLP()方法从<code>/data/system/packages.xml</code>文件中读取应用程序包管理相关信息。</li>
+<li>提取或者转换Java系统库中的dex文件</li>
+<li>为<code>/system/framwworks</code>,<code>/system/app</code>,<code>/vendor/app</code>目录添加FileObserver，FileObserver用于检测目录天剑删除的问价事件。</li>
+<li>调用scanDieLP()扫描上述三个目录中的所有应用程序，并将扫描结果保存到PmS的mPackages变量中。</li>
+<li>删除已经不存在的应用程序对应的数据记录</li>
+<li>清除没有安装成功的数据记录</li>
+<li>为<code>/data/app</code>添加FileObserver</li>
+<li>检测是否系统升级，如果升过则重新为应用程序设置权限</li>
+<li>将mSettings.mPackages中的数据从新写入packages.xml中</li>
+</ol>
+<p><strong>获取PmS</strong></p>
+<p>通过<code>ContextImpl.getPackageManager()</code>返回一个<code>PackageManager</code>对象，然后就可以调用改对象提供的各种API接口。</p>
+<p><code>getPackageManager</code>内部获取过程和<code>getSystemService</code>的过程基本相似，都是通过ServiceManager获取指定名称的IBinder对象进而获取PmS服务。（普通服务通过<code>context.getSystemService(&quot;serviceName&quot;)</code>获取）</p>
 
       
     </div>
@@ -265,18 +305,18 @@
     
 <nav id="article-nav">
   
-    <a href="/2016/03/29/Git安装教程/" id="article-nav-newer" class="article-nav-link-wrap">
+    <a href="/2016/07/10/Java对象创建与内存分布/" id="article-nav-newer" class="article-nav-link-wrap">
       <strong class="article-nav-caption"><</strong>
       <div class="article-nav-title">
         
-          Git安装教程
+          Java对象创建与内存分布
         
       </div>
     </a>
   
   
-    <a href="/2016/01/12/hello-world/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">Hexo 常用命令</div>
+    <a href="/2016/07/03/ReactNative实现banner轮播图/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">React Native实现banner轮播图</div>
       <strong class="article-nav-caption">></strong>
     </a>
   
@@ -311,7 +351,7 @@
 
 <div class="duoshuo">
 	<!-- 多说评论框 start -->
-	<div class="ds-thread" data-thread-key="科学上网" data-title="科学上网的正确姿势" data-url="http://zhaoshuo.me/2016/01/16/科学上网/"></div>
+	<div class="ds-thread" data-thread-key="Android包管理服务" data-title="Android包管理服务" data-url="http://zhaoshuo.me/2016/07/04/Android包管理服务/"></div>
 	<!-- 多说评论框 end -->
 	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
 	<script type="text/javascript">

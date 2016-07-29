@@ -11,13 +11,13 @@
 如果是Android，即可以使用ViewPage，又可以使用ScrollView。如果使用ScrollView实现，则与前端实现方法基本相同，只不过需要自己控制手势操作。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="React Native实现banner轮播图">
-<meta property="og:url" content="http://zhaoshuo.me/2016/06/23/ReactNative实现banner轮播图/index.html">
+<meta property="og:url" content="http://zhaoshuo.me/2016/07/03/ReactNative实现banner轮播图/index.html">
 <meta property="og:site_name" content="Gooooood">
 <meta property="og:description" content="轮播图也叫焦点图，就是几张图片不断的来回切换，很多应用和网站中都可以看到。
 如果是前端开发，使用JavaScript+HTML实现，可以将几张图横向拼装在一起，开启setInterval定时任务不断改变拼装图片的left位置。
 如果是Android，即可以使用ViewPage，又可以使用ScrollView。如果使用ScrollView实现，则与前端实现方法基本相同，只不过需要自己控制手势操作。">
 <meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1338260-db752742f9055256.gif?imageMogr2/auto-orient/strip">
-<meta property="og:updated_time" content="2016-07-29T06:43:46.000Z">
+<meta property="og:updated_time" content="2016-07-29T06:50:53.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="React Native实现banner轮播图">
 <meta name="twitter:description" content="轮播图也叫焦点图，就是几张图片不断的来回切换，很多应用和网站中都可以看到。
@@ -124,7 +124,7 @@
 				
 				<section class="switch-part switch-part2">
 					<div class="widget tagcloud" id="js-tagcloud">
-						<a href="/tags/Android/" style="font-size: 16.67px;">Android</a> <a href="/tags/AsyncStorage/" style="font-size: 10px;">AsyncStorage</a> <a href="/tags/Banner/" style="font-size: 10px;">Banner</a> <a href="/tags/Class/" style="font-size: 10px;">Class</a> <a href="/tags/GC算法/" style="font-size: 10px;">GC算法</a> <a href="/tags/Git/" style="font-size: 13.33px;">Git</a> <a href="/tags/IPC/" style="font-size: 10px;">IPC</a> <a href="/tags/Java/" style="font-size: 20px;">Java</a> <a href="/tags/React-Native/" style="font-size: 16.67px;">React Native</a> <a href="/tags/SSH/" style="font-size: 10px;">SSH</a> <a href="/tags/VPN/" style="font-size: 10px;">VPN</a> <a href="/tags/hexo/" style="font-size: 10px;">hexo</a> <a href="/tags/代理/" style="font-size: 10px;">代理</a> <a href="/tags/内存/" style="font-size: 13.33px;">内存</a> <a href="/tags/内存回收/" style="font-size: 10px;">内存回收</a> <a href="/tags/内存管理/" style="font-size: 10px;">内存管理</a> <a href="/tags/对象/" style="font-size: 10px;">对象</a> <a href="/tags/异常/" style="font-size: 10px;">异常</a> <a href="/tags/教程/" style="font-size: 13.33px;">教程</a> <a href="/tags/歌词/" style="font-size: 10px;">歌词</a> <a href="/tags/版本管理/" style="font-size: 10px;">版本管理</a> <a href="/tags/科学上网/" style="font-size: 10px;">科学上网</a> <a href="/tags/类加载/" style="font-size: 10px;">类加载</a> <a href="/tags/虚拟机/" style="font-size: 20px;">虚拟机</a> <a href="/tags/资源加载/" style="font-size: 10px;">资源加载</a> <a href="/tags/轮播图/" style="font-size: 10px;">轮播图</a> <a href="/tags/进程间通信/" style="font-size: 10px;">进程间通信</a>
+						<a href="/tags/Android/" style="font-size: 17.5px;">Android</a> <a href="/tags/AsyncStorage/" style="font-size: 10px;">AsyncStorage</a> <a href="/tags/Banner/" style="font-size: 10px;">Banner</a> <a href="/tags/Class/" style="font-size: 10px;">Class</a> <a href="/tags/GC算法/" style="font-size: 10px;">GC算法</a> <a href="/tags/Git/" style="font-size: 12.5px;">Git</a> <a href="/tags/IPC/" style="font-size: 10px;">IPC</a> <a href="/tags/Java/" style="font-size: 20px;">Java</a> <a href="/tags/PackageManagerService/" style="font-size: 10px;">PackageManagerService</a> <a href="/tags/Pms/" style="font-size: 10px;">Pms</a> <a href="/tags/React-Native/" style="font-size: 15px;">React Native</a> <a href="/tags/SSH/" style="font-size: 10px;">SSH</a> <a href="/tags/VPN/" style="font-size: 10px;">VPN</a> <a href="/tags/hexo/" style="font-size: 10px;">hexo</a> <a href="/tags/代理/" style="font-size: 10px;">代理</a> <a href="/tags/内存/" style="font-size: 12.5px;">内存</a> <a href="/tags/内存回收/" style="font-size: 10px;">内存回收</a> <a href="/tags/内存管理/" style="font-size: 10px;">内存管理</a> <a href="/tags/包管理服务/" style="font-size: 10px;">包管理服务</a> <a href="/tags/对象/" style="font-size: 10px;">对象</a> <a href="/tags/异常/" style="font-size: 10px;">异常</a> <a href="/tags/教程/" style="font-size: 12.5px;">教程</a> <a href="/tags/歌词/" style="font-size: 10px;">歌词</a> <a href="/tags/版本管理/" style="font-size: 10px;">版本管理</a> <a href="/tags/科学上网/" style="font-size: 10px;">科学上网</a> <a href="/tags/类加载/" style="font-size: 10px;">类加载</a> <a href="/tags/虚拟机/" style="font-size: 20px;">虚拟机</a> <a href="/tags/资源加载/" style="font-size: 10px;">资源加载</a> <a href="/tags/轮播图/" style="font-size: 10px;">轮播图</a> <a href="/tags/进程间通信/" style="font-size: 10px;">进程间通信</a>
 					</div>
 				</section>
 				
@@ -203,8 +203,8 @@
       <div class="body-wrap"><article id="post-ReactNative实现banner轮播图" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
-      <a href="/2016/06/23/ReactNative实现banner轮播图/" class="article-date">
-  	<time datetime="2016-06-23T06:41:09.000Z" itemprop="datePublished">2016-06-23</time>
+      <a href="/2016/07/03/ReactNative实现banner轮播图/" class="article-date">
+  	<time datetime="2016-07-03T06:41:09.000Z" itemprop="datePublished">2016-07-03</time>
 </a>
     </div>
   
@@ -259,18 +259,18 @@
     
 <nav id="article-nav">
   
-    <a href="/2016/07/03/Git版本管理策略/" id="article-nav-newer" class="article-nav-link-wrap">
+    <a href="/2016/07/04/Android包管理服务/" id="article-nav-newer" class="article-nav-link-wrap">
       <strong class="article-nav-caption"><</strong>
       <div class="article-nav-title">
         
-          Git版本管理策略
+          Android包管理服务
         
       </div>
     </a>
   
   
-    <a href="/2016/06/22/ReactNative数据存储/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">React Native数据存储</div>
+    <a href="/2016/07/03/Git版本管理策略/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">Git版本管理策略</div>
       <strong class="article-nav-caption">></strong>
     </a>
   
@@ -305,7 +305,7 @@
 
 <div class="duoshuo">
 	<!-- 多说评论框 start -->
-	<div class="ds-thread" data-thread-key="ReactNative实现banner轮播图" data-title="React Native实现banner轮播图" data-url="http://zhaoshuo.me/2016/06/23/ReactNative实现banner轮播图/"></div>
+	<div class="ds-thread" data-thread-key="ReactNative实现banner轮播图" data-title="React Native实现banner轮播图" data-url="http://zhaoshuo.me/2016/07/03/ReactNative实现banner轮播图/"></div>
 	<!-- 多说评论框 end -->
 	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
 	<script type="text/javascript">
