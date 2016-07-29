@@ -194,86 +194,6 @@
 
       <div class="body-wrap">
   
-    <article id="post-Java内存区域与异常" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/2016/07/29/Java内存区域与异常/" class="article-date">
-  	<time datetime="2016-07-29T04:15:51.000Z" itemprop="datePublished">2016-07-29</time>
-</a>
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2016/07/29/Java内存区域与异常/">Java内存区域与异常</a>
-    </h1>
-  
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>Java虚拟机在运行时会把其管理的内存划分为若干不同的数据区域。《Java虚拟机规范》规定的数据区域通常包括程序计数器、Java虚拟机栈、本地方法栈、Java堆、方法区、运行时常量池以及直接内存。这些区域都会有各自不同的生存周期以及各自不同的用途，本文主要介绍这些内存区域以及各个内存区域可能抛出的异常。</p>
-<h2 id="u7A0B_u5E8F_u8BA1_u6570_u5668"><a href="#u7A0B_u5E8F_u8BA1_u6570_u5668" class="headerlink" title="程序计数器"></a>程序计数器</h2><p>程序计数器相当于当前线程所执行字节码的行号指示器。字节码解释器通过改变这个计数器来选取下一条需要执行的字节码指令，程序的循环、跳转、异常处理、线程切换都需要依赖这个计数器来完成。</p>
-<p>一个Java虚拟机内部可以有多个线程，每个线程都会有单独的程序计数器，程序计数器属于线程私有内存，各个计数器之间互不影响。</p>
-<p>程序计数器记录的只能是Java方法编译出的字节码指令地址，对于Native方法，则计数器为空。程序计数器不会出现OutOfMemoryError异常。</p>
-<h2 id="Java_u865A_u62DF_u673A_u6808"><a href="#Java_u865A_u62DF_u673A_u6808" class="headerlink" title="Java虚拟机栈"></a>Java虚拟机栈</h2><p>Java虚拟机栈就是我们经常说的堆栈中的栈内存。虚拟机栈描述的是Java方法执行的内存模型：每个方法在执行时都会创建一个栈帧(Stack Frame)用于存储局部变量表、操作数栈、动态链接、方法出口等信息。每个方法从调用到执行完成的过程都对应着一个栈帧在虚拟机栈中从入栈到出栈的过程。</p>
-<p>虚拟机栈中有一个局部变量表，局部变量表存放了编译期可知的各种基本数据类型（boolean、byte、char、short、int、float、long、double）、对象引用和指向一条字节码指令地址的returnAddress类型。</p>
-<p>虚拟机栈是线程私有的，其生命周期与线程相同。此区域可能会出现两种异常：如果请求栈深度大于虚拟机最大允许栈深度则抛出StackOverflowError异常；如果虚拟机栈在动态扩展时无法申请到足够的内存则会抛出OutOfMemoryError异常。</p>
-<h2 id="u672C_u5730_u65B9_u6CD5_u6808"><a href="#u672C_u5730_u65B9_u6CD5_u6808" class="headerlink" title="本地方法栈"></a>本地方法栈</h2><p>同Java虚拟机栈相似，本地方法栈是Native方法执行的内存模型，其内部也会抛出StackOverflowError和OutOfMemory异常。</p>
-<h2 id="Java__u5806"><a href="#Java__u5806" class="headerlink" title="Java 堆"></a>Java 堆</h2><p>Java堆用来存放虚拟机在运行时创建的Java对象实例。Java虚拟机规范规定：所有的对象实例以及数组都要在堆上分配。不过现在很多技术比如Just InTime（及时编译），允许在栈中分配对象内存。</p>
-<p>Java堆内存被所有线程共享，任何线程都可以在上面创建对象。内存回收（GC）主要在Java堆上进行。</p>
-<p>Java堆内存也是虚拟机所管理的内存最大的一块。其内存只要逻辑上连续即可，允许物理上不连续。如果在创建对象时堆内存没有足够的内存分配会抛出OutOfMemoryError异常。</p>
-<h2 id="u65B9_u6CD5_u533A"><a href="#u65B9_u6CD5_u533A" class="headerlink" title="方法区"></a>方法区</h2><p>方法区用来存储已被虚拟机加载的类信息、常量、静态变量、及时编译器编译后的代码等数据，被所有线程共享。</p>
-<p>当方法区无法满足内存分配时，会抛出OutOfMemoryError异常。</p>
-<h2 id="u8FD0_u884C_u65F6_u5E38_u91CF_u6C60"><a href="#u8FD0_u884C_u65F6_u5E38_u91CF_u6C60" class="headerlink" title="运行时常量池"></a>运行时常量池</h2><p>运行时常量池是方法区的一部分，Class文件中的常量池（Constant Pool Table）在类加载后会放到运行时常量池中。</p>
-<p>Class常量池用于存放编译期生成的各种字面常量和符号引用。运行时常量池与Class常量池的区别就是动态性。运行时常量池不仅仅允许编译期放入常量池，也允许运行时将新的常量放入常量池。而Class常量池只能在编译期生成。Java虚拟机规范对Class常量池要求严格，对运行时常量池的要求则比较宽松。</p>
-<p>当常量池无法再申请到内存空间时会抛出OutOfMemoryError异常。</p>
-<h2 id="u76F4_u63A5_u5185_u5B58"><a href="#u76F4_u63A5_u5185_u5B58" class="headerlink" title="直接内存"></a>直接内存</h2><p>直接内存也就是我们本机可用的物理内存空间，不属于任何Java虚拟机，但任何虚拟机都可以在上面操作。例如，Java虚拟机可以通过NIO包中提供的方法直接在物理内存中分配。</p>
-<p>当Java虚拟机要求分配的内存大于本机物理内存时就会抛出OutOfMemoryError异常。</p>
-<h2 id="u5185_u5B58_u6EA2_u51FA_u4E0E_u5185_u5B58_u6CC4_u9732_u7684_u533A_u522B"><a href="#u5185_u5B58_u6EA2_u51FA_u4E0E_u5185_u5B58_u6CC4_u9732_u7684_u533A_u522B" class="headerlink" title="内存溢出与内存泄露的区别"></a>内存溢出与内存泄露的区别</h2><p><strong>内存溢出</strong><br>内存溢出是指分配对象的内存超过虚拟机所允许的最大内存，此时所有的对象实例均有用。优化方案就是尝试减少程序运行时内存消耗。</p>
-<p><strong>内存泄露</strong><br>某些对象不再有用，但由于不正确的引用关系造成对象内存无法释放，最终导致所有对象的内存超过虚拟机所允许的最大值。所以要检查每个对象的生命周期，确保长生命周期对象引用短生命周期时释放内存。</p>
-
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java/">Java</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/内存/">内存</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/异常/">异常</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/虚拟机/">虚拟机</a></li></ul>
-	</div>
-
-      
-	<div class="article-category tagcloud">
-	<a class="article-category-link" href="/categories/Java虚拟机/">Java虚拟机</a>
-	</div>
-
-
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-
-
-  
     <article id="post-虚拟机类加载机制" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
@@ -901,6 +821,86 @@
       
 	<div class="article-category tagcloud">
 	<a class="article-category-link" href="/categories/Git/">Git</a>
+	</div>
+
+
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+
+
+  
+    <article id="post-Java内存区域与异常" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2016/06/26/Java内存区域与异常/" class="article-date">
+  	<time datetime="2016-06-26T04:15:51.000Z" itemprop="datePublished">2016-06-26</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/06/26/Java内存区域与异常/">Java内存区域与异常</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Java虚拟机在运行时会把其管理的内存划分为若干不同的数据区域。《Java虚拟机规范》规定的数据区域通常包括程序计数器、Java虚拟机栈、本地方法栈、Java堆、方法区、运行时常量池以及直接内存。这些区域都会有各自不同的生存周期以及各自不同的用途，本文主要介绍这些内存区域以及各个内存区域可能抛出的异常。</p>
+<h2 id="u7A0B_u5E8F_u8BA1_u6570_u5668"><a href="#u7A0B_u5E8F_u8BA1_u6570_u5668" class="headerlink" title="程序计数器"></a>程序计数器</h2><p>程序计数器相当于当前线程所执行字节码的行号指示器。字节码解释器通过改变这个计数器来选取下一条需要执行的字节码指令，程序的循环、跳转、异常处理、线程切换都需要依赖这个计数器来完成。</p>
+<p>一个Java虚拟机内部可以有多个线程，每个线程都会有单独的程序计数器，程序计数器属于线程私有内存，各个计数器之间互不影响。</p>
+<p>程序计数器记录的只能是Java方法编译出的字节码指令地址，对于Native方法，则计数器为空。程序计数器不会出现OutOfMemoryError异常。</p>
+<h2 id="Java_u865A_u62DF_u673A_u6808"><a href="#Java_u865A_u62DF_u673A_u6808" class="headerlink" title="Java虚拟机栈"></a>Java虚拟机栈</h2><p>Java虚拟机栈就是我们经常说的堆栈中的栈内存。虚拟机栈描述的是Java方法执行的内存模型：每个方法在执行时都会创建一个栈帧(Stack Frame)用于存储局部变量表、操作数栈、动态链接、方法出口等信息。每个方法从调用到执行完成的过程都对应着一个栈帧在虚拟机栈中从入栈到出栈的过程。</p>
+<p>虚拟机栈中有一个局部变量表，局部变量表存放了编译期可知的各种基本数据类型（boolean、byte、char、short、int、float、long、double）、对象引用和指向一条字节码指令地址的returnAddress类型。</p>
+<p>虚拟机栈是线程私有的，其生命周期与线程相同。此区域可能会出现两种异常：如果请求栈深度大于虚拟机最大允许栈深度则抛出StackOverflowError异常；如果虚拟机栈在动态扩展时无法申请到足够的内存则会抛出OutOfMemoryError异常。</p>
+<h2 id="u672C_u5730_u65B9_u6CD5_u6808"><a href="#u672C_u5730_u65B9_u6CD5_u6808" class="headerlink" title="本地方法栈"></a>本地方法栈</h2><p>同Java虚拟机栈相似，本地方法栈是Native方法执行的内存模型，其内部也会抛出StackOverflowError和OutOfMemory异常。</p>
+<h2 id="Java__u5806"><a href="#Java__u5806" class="headerlink" title="Java 堆"></a>Java 堆</h2><p>Java堆用来存放虚拟机在运行时创建的Java对象实例。Java虚拟机规范规定：所有的对象实例以及数组都要在堆上分配。不过现在很多技术比如Just InTime（及时编译），允许在栈中分配对象内存。</p>
+<p>Java堆内存被所有线程共享，任何线程都可以在上面创建对象。内存回收（GC）主要在Java堆上进行。</p>
+<p>Java堆内存也是虚拟机所管理的内存最大的一块。其内存只要逻辑上连续即可，允许物理上不连续。如果在创建对象时堆内存没有足够的内存分配会抛出OutOfMemoryError异常。</p>
+<h2 id="u65B9_u6CD5_u533A"><a href="#u65B9_u6CD5_u533A" class="headerlink" title="方法区"></a>方法区</h2><p>方法区用来存储已被虚拟机加载的类信息、常量、静态变量、及时编译器编译后的代码等数据，被所有线程共享。</p>
+<p>当方法区无法满足内存分配时，会抛出OutOfMemoryError异常。</p>
+<h2 id="u8FD0_u884C_u65F6_u5E38_u91CF_u6C60"><a href="#u8FD0_u884C_u65F6_u5E38_u91CF_u6C60" class="headerlink" title="运行时常量池"></a>运行时常量池</h2><p>运行时常量池是方法区的一部分，Class文件中的常量池（Constant Pool Table）在类加载后会放到运行时常量池中。</p>
+<p>Class常量池用于存放编译期生成的各种字面常量和符号引用。运行时常量池与Class常量池的区别就是动态性。运行时常量池不仅仅允许编译期放入常量池，也允许运行时将新的常量放入常量池。而Class常量池只能在编译期生成。Java虚拟机规范对Class常量池要求严格，对运行时常量池的要求则比较宽松。</p>
+<p>当常量池无法再申请到内存空间时会抛出OutOfMemoryError异常。</p>
+<h2 id="u76F4_u63A5_u5185_u5B58"><a href="#u76F4_u63A5_u5185_u5B58" class="headerlink" title="直接内存"></a>直接内存</h2><p>直接内存也就是我们本机可用的物理内存空间，不属于任何Java虚拟机，但任何虚拟机都可以在上面操作。例如，Java虚拟机可以通过NIO包中提供的方法直接在物理内存中分配。</p>
+<p>当Java虚拟机要求分配的内存大于本机物理内存时就会抛出OutOfMemoryError异常。</p>
+<h2 id="u5185_u5B58_u6EA2_u51FA_u4E0E_u5185_u5B58_u6CC4_u9732_u7684_u533A_u522B"><a href="#u5185_u5B58_u6EA2_u51FA_u4E0E_u5185_u5B58_u6CC4_u9732_u7684_u533A_u522B" class="headerlink" title="内存溢出与内存泄露的区别"></a>内存溢出与内存泄露的区别</h2><p><strong>内存溢出</strong><br>内存溢出是指分配对象的内存超过虚拟机所允许的最大内存，此时所有的对象实例均有用。优化方案就是尝试减少程序运行时内存消耗。</p>
+<p><strong>内存泄露</strong><br>某些对象不再有用，但由于不正确的引用关系造成对象内存无法释放，最终导致所有对象的内存超过虚拟机所允许的最大值。所以要检查每个对象的生命周期，确保长生命周期对象引用短生命周期时释放内存。</p>
+
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java/">Java</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/内存/">内存</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/异常/">异常</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/虚拟机/">虚拟机</a></li></ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+	<a class="article-category-link" href="/categories/Java虚拟机/">Java虚拟机</a>
 	</div>
 
 
